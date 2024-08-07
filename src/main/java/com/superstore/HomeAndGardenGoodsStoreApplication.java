@@ -1,13 +1,13 @@
-package com.example.diplom;
+package com.superstore;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DiplomApplication {
+public class HomeAndGardenGoodsStoreApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DiplomApplication.class, args);
+		SpringApplication.run(HomeAndGardenGoodsStoreApplication.class, args);
 	}
 
 }

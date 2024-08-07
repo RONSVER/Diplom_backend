@@ -1,4 +1,4 @@
-package com.example.diplom.entity;
+package com.superstore.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
