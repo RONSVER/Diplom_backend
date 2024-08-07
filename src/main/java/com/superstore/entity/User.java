@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Entity
-@Table(name = "user_info")
+@Table(name = "Users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,25 +18,37 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
+    @Column(nullable = false)
     private String name;
 
-    private String surname;
-
+    @Column(unique = true, nullable = false)
     private String email;
-    @Column(name = "PasswordHash")
-    private String password;
 
-    private String phone;
+    @Column(nullable = false)
+    private String phoneNumber;
 
-    private String role = "ROLE_USER";
+    @Column(nullable = false)
+    private String passwordHash;
 
-    public User(String name, String surname, String email, String password) {
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.phone = getPhone();
-        this.password = password;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<Cart> carts;
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<Order> orders;
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<Favorite> favorites;
+
+    public enum Role {
+        Client, Administrator
     }
 }

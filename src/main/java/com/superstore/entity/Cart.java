@@ -1,32 +1,31 @@
 package com.superstore.entity;
 
 import jakarta.persistence.*;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Entity
-@Table(name = "Categories")
+@Table(name = "Cart")
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class Category {
+public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer categoryId;
+    private Integer cartId;
 
-    @Column(nullable = false)
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "cart")
     @ToString.Exclude
-    private List<Product> products;
+    private List<CartItem> cartItems;
 
 }
-
