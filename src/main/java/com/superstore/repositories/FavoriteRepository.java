@@ -1,9 +1,9 @@
 package com.superstore.repositories;
 
-import com.superstore.entity.Category;
+import com.superstore.entity.Favorite;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryRepositoryJpa extends JpaRepository<Category, Long> {
+public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 }

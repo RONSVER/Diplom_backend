@@ -1,6 +1,6 @@
 package com.superstore.services.impl;
 
-import com.superstore.repositories.CartRepositoryJpa;
+import com.superstore.repositories.CartRepository;
 import com.superstore.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 public class CartServiceImplOne implements CartService {
 
     @Autowired
-    CartRepositoryJpa repository;
+    CartRepository repository;
 }
