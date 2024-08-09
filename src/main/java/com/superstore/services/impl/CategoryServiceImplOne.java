@@ -1,7 +1,7 @@
-package com.example.diplom.services.impl;
+package com.superstore.services.impl;
 
-import com.example.diplom.repositories.CategoryRepositoryJpa;
-import com.example.diplom.services.CategoryService;
+import com.superstore.repositories.CategoryRepositoryJpa;
+import com.superstore.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

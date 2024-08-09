@@ -1,4 +1,4 @@
-package com.example.diplom.services;
+package com.superstore.services;
 
 public interface CategoryService {
 

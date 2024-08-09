@@ -1,6 +1,6 @@
-package com.example.diplom.repositories;
+package com.superstore.repositories;
 
-import com.example.diplom.entity.User;
+import com.superstore.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
