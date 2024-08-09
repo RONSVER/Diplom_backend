@@ -1,4 +1,4 @@
-package com.superstore.repositories;
+package com.superstore.repository;
 
 import com.superstore.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;

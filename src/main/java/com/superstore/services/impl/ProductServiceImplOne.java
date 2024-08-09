@@ -1,6 +1,6 @@
 package com.superstore.services.impl;
 
-import com.superstore.repositories.ProductRepository;
+import com.superstore.repository.ProductRepository;
 import com.superstore.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
