@@ -1,6 +1,12 @@
 package com.superstore.dto;
 
-import javax.management.relation.Role;
+import com.superstore.entity.User;
 
-public record UserDto(Long userId, String name, String email, String phoneNumber, Role role) {
+public record UserDto(
+        Long userId,
+        String name,
+        String email,
+        String phoneNumber,
+        User.Role role
+) {
 }
