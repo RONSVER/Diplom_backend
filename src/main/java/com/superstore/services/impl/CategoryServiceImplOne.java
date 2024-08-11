@@ -3,17 +3,17 @@ package com.superstore.services.impl;
 import com.superstore.entity.Category;
 import com.superstore.repository.CategoryRepository;
 import com.superstore.services.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CategoryServiceImplOne implements CategoryService {
 
-    @Autowired
-    CategoryRepository dao;
+    private final CategoryRepository dao;
 
     @Override
     public Category addCategory(Category category) {
