@@ -15,5 +15,5 @@ public interface UserMapper {
             @Mapping(target = "phoneNumber", source = "entity.phoneNumber"),
             @Mapping(target = "role", source = "entity.role"),
     })
-    UserDto hotelToHotelListViewDTO(User entity);
+    UserDto userToUserDTO(User entity);
 }
