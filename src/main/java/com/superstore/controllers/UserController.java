@@ -3,12 +3,9 @@ package com.superstore.controllers;
 import com.superstore.entity.User;
 import com.superstore.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -18,39 +15,32 @@ public class UserController {
     UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll() {
-        List<User> users = userService.findAll();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public List<User> findAll() {
+        return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
-        Optional<User> user = userService.findById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public User findById(@PathVariable Long id) {
+        return userService.findById(id).orElse(null);
     }
 
     @PostMapping
-    public ResponseEntity<User> save(@RequestBody User user) {
-        User createdUser = userService.save(user);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    public User save(@RequestBody User user) {
+        return userService.save(user);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
         if (!userService.findById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
+            return null;
         }
         user.setUserId(id);
-        User updatedUser = userService.save(user);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+
+        return userService.save(user);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-        if (!userService.findById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+    public void deleteById(@PathVariable Long id) {
         userService.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }
