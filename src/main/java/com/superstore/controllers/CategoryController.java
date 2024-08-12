@@ -2,17 +2,17 @@ package com.superstore.controllers;
 
 import com.superstore.entity.Category;
 import com.superstore.services.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/v1/categories")
+@AllArgsConstructor
 public class CategoryController {
 
-    @Autowired
-    CategoryService service;
+    private CategoryService service;
 
     @PostMapping
     public Category addCategory(@RequestBody Category category) {
