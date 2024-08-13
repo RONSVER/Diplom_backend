@@ -1,5 +1,6 @@
 package com.superstore.mapper;
 
+import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.entity.User;
 import org.mapstruct.Mapper;
@@ -17,11 +18,21 @@ public interface UserMapper {
     })
     UserDTO userToUserDTO(User entity);
 
-
-    @Mapping(source = "userId", target = "userId")
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "email", target = "email")
-    @Mapping(source = "phoneNumber", target = "phoneNumber")
-    @Mapping(source = "role", target = "role")
+    @Mappings({
+        @Mapping(source = "userId", target = "userId"),
+        @Mapping(source = "name", target = "name"),
+        @Mapping(source = "email", target = "email"),
+        @Mapping(source = "phoneNumber", target = "phoneNumber"),
+        @Mapping(source = "role", target = "role")
+    })
     User userDTOToUser(UserDTO userDTO);
+
+    @Mappings({
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "email", target = "email"),
+            @Mapping(source = "phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "passwordHash", target = "passwordHash"),
+            @Mapping(source = "role", target = "role")
+    })
+    User userCreateDTOToUser(UserCreateDTO userCreateDTO);
 }

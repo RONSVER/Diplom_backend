@@ -1,5 +1,6 @@
 package com.superstore.controllers;
 
+import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.entity.User;
 import com.superstore.mapper.UserMapper;
@@ -26,7 +27,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     private List<UserDTO> findAll() {
         return userService.findAll()
                 .stream()
@@ -45,8 +46,8 @@ public class UserController {
     }
 
     @PostMapping
-    private UserDTO save(@RequestBody UserDTO userDTO) {
-        User user = userMapper.userDTOToUser(userDTO);
+    private UserDTO save(@RequestBody UserCreateDTO userCreateDTO) {
+        User user = userMapper.userCreateDTOToUser(userCreateDTO);
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         return userMapper
                 .userToUserDTO(userService.save(user));
