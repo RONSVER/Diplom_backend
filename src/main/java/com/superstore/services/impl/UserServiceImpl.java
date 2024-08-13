@@ -1,6 +1,7 @@
 package com.superstore.services.impl;
 
 import com.superstore.entity.User;
+import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.repository.UserRepository;
 import com.superstore.services.UserService;
 import lombok.AllArgsConstructor;
@@ -23,8 +24,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return dao.findById(id);
+    public User findById(Long id) {
+        return dao.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("No user with id " + id));
     }
 
     @Override
