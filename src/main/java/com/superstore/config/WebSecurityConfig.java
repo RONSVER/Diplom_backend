@@ -42,7 +42,7 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/users", "/v1/users/login").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session
