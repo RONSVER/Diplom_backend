@@ -1,46 +1,73 @@
 package com.superstore.controllers;
 
+import com.superstore.dto.UserDTO;
 import com.superstore.entity.User;
+import com.superstore.mapper.UserMapper;
+import com.superstore.security.AuthenticationService;
+import com.superstore.security.model.JwtAuthenticationResponse;
+import com.superstore.security.model.SignInRequest;
 import com.superstore.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/users")
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+    private final UserMapper userMapper;
+    private final AuthenticationService authenticationService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    private List<UserDTO> findAll() {
+        return userService.findAll()
+                .stream()
+                .map(userMapper::userToUserDTO)
+                .collect(Collectors.toList()
+                );
     }
 
     @GetMapping("/{id}")
-    public User findById(@PathVariable Long id) {
-        return userService.findById(id).orElse(null);
+    private UserDTO findById(@PathVariable Long id) {
+        return userMapper
+                .userToUserDTO(
+                        userService.findById(id)
+                        .orElse(null)
+                );
     }
 
     @PostMapping
-    public User save(@RequestBody User user) {
-        return userService.save(user);
+    private UserDTO save(@RequestBody UserDTO userDTO) {
+        User user = userMapper.userDTOToUser(userDTO);
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        return userMapper
+                .userToUserDTO(userService.save(user));
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+    private User updateUser(@PathVariable Long id, @RequestBody User user) {
         if (!userService.findById(id).isPresent()) {
             return null;
         }
         user.setUserId(id);
-
         return userService.save(user);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
+    private void deleteById(@PathVariable Long id) {
         userService.deleteById(id);
+    }
+
+    @PostMapping("/login")
+    public JwtAuthenticationResponse login(@RequestBody SignInRequest request) {
+        return authenticationService.authenticate(request);
     }
 }

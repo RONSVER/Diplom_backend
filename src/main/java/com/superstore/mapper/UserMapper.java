@@ -1,6 +1,6 @@
 package com.superstore.mapper;
 
-import com.superstore.dto.UserDto;
+import com.superstore.dto.UserDTO;
 import com.superstore.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,11 +9,19 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mappings({
-            @Mapping(target = "userId", source = "entity.userId"),
-            @Mapping(target = "name", source = "entity.name"),
-            @Mapping(target = "email", source = "entity.email"),
-            @Mapping(target = "phoneNumber", source = "entity.phoneNumber"),
-            @Mapping(target = "role", source = "entity.role"),
+            @Mapping(target = "userId", source = "userId"),
+            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "email", source = "email"),
+            @Mapping(target = "phoneNumber", source = "phoneNumber"),
+            @Mapping(target = "role", source = "role"),
     })
-    UserDto userToUserDTO(User entity);
+    UserDTO userToUserDTO(User entity);
+
+
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "email", target = "email")
+    @Mapping(source = "phoneNumber", target = "phoneNumber")
+    @Mapping(source = "role", target = "role")
+    User userDTOToUser(UserDTO userDTO);
 }
