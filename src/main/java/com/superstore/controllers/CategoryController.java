@@ -1,42 +1,55 @@
 package com.superstore.controllers;
 
+import com.superstore.dto.CategoryDto;
 import com.superstore.entity.Category;
+import com.superstore.mapper.CategoryMapper;
+
 import com.superstore.services.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/categories")
+@AllArgsConstructor
 public class CategoryController {
 
-    @Autowired
-    CategoryService service;
+    private CategoryService service;
+    private final CategoryMapper categoryMapper;
 
     @PostMapping
-    public Category addCategory(@RequestBody Category category) {
-        return service.addCategory(category);
+    public CategoryDto addCategory(@RequestBody CategoryDto categoryDto) {
+        Category category = categoryMapper.categoryDTOToCategory(categoryDto);
+        return categoryMapper.categoryToCategoryDTO(service.addCategory(category));
     }
 
     @PutMapping("/{id}")
-    public Category editCategory(@PathVariable Long id, @RequestBody Category category) {
+    public CategoryDto editCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
         if (!service.findById(id).isPresent()) {
             return null;
         }
 
-        category.setCategoryId(id);
-        return service.addCategory(category);
+        Category byId = service.findById(id).get();
+        byId.setName(categoryDto.name());
+        return categoryMapper.categoryToCategoryDTO(service.addCategory(byId));
     }
 
     @GetMapping
-    public List<Category> getAllCategory() {
-        return service.getAllCategory();
+    public List<CategoryDto> getAllCategory() {
+        return service.getAllCategory()
+                .stream()
+                .map(categoryMapper::categoryToCategoryDTO)
+                .collect(Collectors.toList()
+                );
     }
 
+
     @GetMapping("/{id}")
-    public Category findById(@PathVariable Long id) {
-        return service.findById(id).orElse(null);
+    public CategoryDto findById(@PathVariable Long id) {
+
+        return categoryMapper.categoryToCategoryDTO(service.findById(id).orElse(null));
     }
 
     @DeleteMapping("/{id}")

@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,7 +42,7 @@ public class UserController {
         return userMapper
                 .userToUserDTO(
                         userService.findById(id)
-                        .orElse(null)
+                                .orElse(null)
                 );
     }
 
@@ -54,12 +55,17 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    private User updateUser(@PathVariable Long id, @RequestBody User user) {
+    private UserDTO updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
         if (!userService.findById(id).isPresent()) {
             return null;
         }
-        user.setUserId(id);
-        return userService.save(user);
+
+        User byId = userService.findById(id).get();
+        byId.setName(userDTO.name());
+        byId.setEmail(userDTO.email());
+        byId.setPhoneNumber(userDTO.phoneNumber());
+        byId.setRole(userDTO.role());
+        return userMapper.userToUserDTO(userService.save(byId));
     }
 
     @DeleteMapping("/{id}")
