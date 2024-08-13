@@ -28,6 +28,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findByEmail(String email) {
+        return dao.findByEmail(email);
+    }
+
+    @Override
     public User save(User user) {
         return dao.save(user);
     }
