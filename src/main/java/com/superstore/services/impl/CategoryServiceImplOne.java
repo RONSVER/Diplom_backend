@@ -1,6 +1,7 @@
 package com.superstore.services.impl;
 
 import com.superstore.entity.Category;
+import com.superstore.exceptions.CategoryNotFoundException;
 import com.superstore.repository.CategoryRepository;
 import com.superstore.services.CategoryService;
 import lombok.AllArgsConstructor;
@@ -36,8 +37,10 @@ public class CategoryServiceImplOne implements CategoryService {
     }
 
     @Override
-    public Optional<Category> findById(Long id) {
-        return dao.findById(id);
+    public Category findById(Long id) {
+         Category category = dao.findById(id)
+                 .orElseThrow(() -> new CategoryNotFoundException("No category with id " + id));
+        return category;
     }
 
     @Override
