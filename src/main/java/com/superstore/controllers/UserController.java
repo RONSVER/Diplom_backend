@@ -3,6 +3,7 @@ package com.superstore.controllers;
 import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.entity.User;
+import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.mapper.UserMapper;
 import com.superstore.security.AuthenticationService;
 import com.superstore.security.model.JwtAuthenticationResponse;
@@ -42,7 +43,7 @@ public class UserController {
         return userMapper
                 .userToUserDTO(
                         userService.findById(id)
-                                .orElse(null)
+                        .orElseThrow(() -> new UserNotFoundException("No user with id " + id))
                 );
     }
 
