@@ -3,6 +3,7 @@ package com.superstore.controllers;
 import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.entity.User;
+import com.superstore.exceptions.NoUniqueUserEmailException;
 import com.superstore.mapper.UserMapper;
 import com.superstore.security.AuthenticationService;
 import com.superstore.security.model.JwtAuthenticationResponse;
@@ -76,5 +77,18 @@ public class UserController {
     @PostMapping("/login")
     public JwtAuthenticationResponse login(@RequestBody SignInRequest request) {
         return authenticationService.authenticate(request);
+    }
+
+    @PostMapping("/register")
+    public String registerUser(@RequestBody UserCreateDTO userCreateDTO) {
+        if (userService.findByEmail(userCreateDTO.email()).isPresent()) {
+            throw new NoUniqueUserEmailException("No unique email" + userCreateDTO.email());
+        }
+
+        User user = userMapper.userCreateDTOToUser(userCreateDTO);
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        userMapper.userToUserDTO(userService.save(user));
+
+        return "you has been registered!";
     }
 }
