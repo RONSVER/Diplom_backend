@@ -8,6 +8,11 @@ import com.superstore.security.AuthenticationService;
 import com.superstore.security.model.JwtAuthenticationResponse;
 import com.superstore.security.model.SignInRequest;
 import com.superstore.services.UserService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,9 +41,24 @@ public class UserController {
                 .collect(Collectors.toList()
                 );
     }
+    @Operation(
+            summary = "Получить пользователя по ID",
+            description = "Возвращает пользователя на основе переданного идентификатора",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Пользователь найден"),
+                    @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+            }
+    )
 
     @GetMapping("/{id}")
-    private UserDTO findById(@PathVariable Long id) {
+    private UserDTO findById(@PathVariable
+                                 @Parameter(
+                                         name = "id",
+                                         description = "Идентификатор пользователя",
+                                         required = true,
+                                         in = ParameterIn.PATH
+                                 )
+                                 Long id) {
         return userMapper
                 .userToUserDTO(
                         userService.findById(id)
