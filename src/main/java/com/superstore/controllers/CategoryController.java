@@ -2,6 +2,7 @@ package com.superstore.controllers;
 
 import com.superstore.dto.CategoryDto;
 import com.superstore.entity.Category;
+import com.superstore.exceptions.CategoryNotFoundException;
 import com.superstore.mapper.CategoryMapper;
 
 import com.superstore.services.CategoryService;
@@ -49,7 +50,8 @@ public class CategoryController {
     @GetMapping("/{id}")
     public CategoryDto findById(@PathVariable Long id) {
 
-        return categoryMapper.categoryToCategoryDTO(service.findById(id).orElse(null));
+        return categoryMapper.categoryToCategoryDTO(service.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("No category with id " + id)));
     }
 
     @DeleteMapping("/{id}")
