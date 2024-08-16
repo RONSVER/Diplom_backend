@@ -24,9 +24,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
-        return dao.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("No user with id " + id));
+    public Optional<User> findById(Long id) {
+        return dao.findById(id);
     }
 
     @Override

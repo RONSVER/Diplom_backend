@@ -37,10 +37,9 @@ public class CategoryServiceImplOne implements CategoryService {
     }
 
     @Override
-    public Category findById(Long id) {
-         Category category = dao.findById(id)
-                 .orElseThrow(() -> new CategoryNotFoundException("No category with id " + id));
-        return category;
+    public Optional<Category> findById(Long id) {
+
+         return dao.findById(id);
     }
 
     @Override
