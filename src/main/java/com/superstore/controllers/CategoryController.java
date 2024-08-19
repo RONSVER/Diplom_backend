@@ -7,6 +7,7 @@ import com.superstore.mapper.CategoryMapper;
 
 import com.superstore.services.CategoryService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class CategoryController {
     private CategoryService service;
     private final CategoryMapper categoryMapper;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @PreAuthorize("hasAuthority('Administrator')")
     public CategoryDto addCategory(@RequestBody CategoryDto categoryDto) {

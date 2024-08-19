@@ -3,7 +3,7 @@ package com.superstore.controllers;
 import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.entity.User;
-import com.superstore.exceptions.UserNotFoundException;
+import com.superstore.exceptions.NoUniqueUserEmailException;
 import com.superstore.mapper.UserMapper;
 import com.superstore.security.AuthenticationService;
 import com.superstore.security.model.JwtAuthenticationResponse;
@@ -15,12 +15,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -64,7 +64,7 @@ public class UserController {
         return userMapper
                 .userToUserDTO(
                         userService.findById(id)
-                        .orElseThrow(() -> new UserNotFoundException("No user with id " + id))
+                                .orElse(null)
                 );
     }
 
@@ -98,5 +98,20 @@ public class UserController {
     @PostMapping("/login")
     public JwtAuthenticationResponse login(@RequestBody SignInRequest request) {
         return authenticationService.authenticate(request);
+    }
+
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/register")
+    public String registerUser(@RequestBody UserCreateDTO userCreateDTO) {
+        if (userService.findByEmail(userCreateDTO.email()).isPresent()) {
+            throw new NoUniqueUserEmailException("No unique email" + userCreateDTO.email());
+        }
+
+        User user = userMapper.userCreateDTOToUser(userCreateDTO);
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        userMapper.userToUserDTO(userService.save(user));
+
+        return "you has been registered!";
     }
 }
