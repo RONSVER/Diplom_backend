@@ -10,6 +10,7 @@ import com.superstore.security.model.JwtAuthenticationResponse;
 import com.superstore.security.model.SignInRequest;
 import com.superstore.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -79,6 +80,8 @@ public class UserController {
         return authenticationService.authenticate(request);
     }
 
+
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
     public String registerUser(@RequestBody UserCreateDTO userCreateDTO) {
         if (userService.findByEmail(userCreateDTO.email()).isPresent()) {

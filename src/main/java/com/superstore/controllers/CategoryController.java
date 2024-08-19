@@ -6,6 +6,7 @@ import com.superstore.mapper.CategoryMapper;
 
 import com.superstore.services.CategoryService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class CategoryController {
     private CategoryService service;
     private final CategoryMapper categoryMapper;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public CategoryDto addCategory(@RequestBody CategoryDto categoryDto) {
         Category category = categoryMapper.categoryDTOToCategory(categoryDto);
