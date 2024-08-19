@@ -3,7 +3,6 @@ package com.superstore.controllers;
 import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.entity.User;
-import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.exceptions.NoUniqueUserEmailException;
 import com.superstore.mapper.UserMapper;
 import com.superstore.security.AuthenticationService;
@@ -22,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
