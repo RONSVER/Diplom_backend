@@ -1,6 +1,7 @@
 package com.superstore.services.impl;
 
 import com.superstore.entity.User;
+import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.repository.UserRepository;
 import com.superstore.services.UserService;
 import lombok.AllArgsConstructor;

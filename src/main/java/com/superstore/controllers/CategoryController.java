@@ -2,11 +2,13 @@ package com.superstore.controllers;
 
 import com.superstore.dto.CategoryDto;
 import com.superstore.entity.Category;
+import com.superstore.exceptions.CategoryNotFoundException;
 import com.superstore.mapper.CategoryMapper;
 
 import com.superstore.services.CategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +24,14 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @PreAuthorize("hasAuthority('Administrator')")
     public CategoryDto addCategory(@RequestBody CategoryDto categoryDto) {
         Category category = categoryMapper.categoryDTOToCategory(categoryDto);
         return categoryMapper.categoryToCategoryDTO(service.addCategory(category));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Administrator')")
     public CategoryDto editCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
         if (!service.findById(id).isPresent()) {
             return null;
@@ -51,10 +55,12 @@ public class CategoryController {
     @GetMapping("/{id}")
     public CategoryDto findById(@PathVariable Long id) {
 
-        return categoryMapper.categoryToCategoryDTO(service.findById(id).orElse(null));
+        return categoryMapper.categoryToCategoryDTO(service.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("No category with id " + id)));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Administrator')")
     public void deleteById(@PathVariable Long id) {
         service.deleteById(id);
     }

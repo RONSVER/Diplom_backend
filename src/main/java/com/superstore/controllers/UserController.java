@@ -3,12 +3,18 @@ package com.superstore.controllers;
 import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.entity.User;
+import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.exceptions.NoUniqueUserEmailException;
 import com.superstore.mapper.UserMapper;
 import com.superstore.security.AuthenticationService;
 import com.superstore.security.model.JwtAuthenticationResponse;
 import com.superstore.security.model.SignInRequest;
 import com.superstore.services.UserService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,7 +36,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('Administrator')")
     private List<UserDTO> findAll() {
         return userService.findAll()
                 .stream()
@@ -38,9 +44,25 @@ public class UserController {
                 .collect(Collectors.toList()
                 );
     }
+    @Operation(
+            summary = "Получить пользователя по ID",
+            description = "Возвращает пользователя на основе переданного идентификатора",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Пользователь найден"),
+                    @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+            }
+    )
 
     @GetMapping("/{id}")
-    private UserDTO findById(@PathVariable Long id) {
+    @PreAuthorize("hasAuthority('Administrator')")
+    private UserDTO findById(@PathVariable
+                                 @Parameter(
+                                         name = "id",
+                                         description = "Идентификатор пользователя",
+                                         required = true,
+                                         in = ParameterIn.PATH
+                                 )
+                                 Long id) {
         return userMapper
                 .userToUserDTO(
                         userService.findById(id)
