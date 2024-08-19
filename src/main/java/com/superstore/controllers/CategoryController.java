@@ -7,6 +7,7 @@ import com.superstore.mapper.CategoryMapper;
 
 import com.superstore.services.CategoryService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +22,14 @@ public class CategoryController {
     private final CategoryMapper categoryMapper;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Administrator')")
     public CategoryDto addCategory(@RequestBody CategoryDto categoryDto) {
         Category category = categoryMapper.categoryDTOToCategory(categoryDto);
         return categoryMapper.categoryToCategoryDTO(service.addCategory(category));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Administrator')")
     public CategoryDto editCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
         if (!service.findById(id).isPresent()) {
             return null;
@@ -55,6 +58,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Administrator')")
     public void deleteById(@PathVariable Long id) {
         service.deleteById(id);
     }
