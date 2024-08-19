@@ -34,7 +34,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('Administrator')")
     private List<UserDTO> findAll() {
         return userService.findAll()
                 .stream()
@@ -52,6 +52,7 @@ public class UserController {
     )
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Administrator')")
     private UserDTO findById(@PathVariable
                                  @Parameter(
                                          name = "id",
