@@ -18,6 +18,14 @@ public class CommonExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonExceptionHandler.class);
 
+    // Общий обработчик всех исключений
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(Exception exception, WebRequest request) {
+        logger.error("Internal server error: {}", exception.getMessage(), exception);
+        ErrorResponse errorResponse = createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.", request);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(Exception exception, WebRequest request) {
         logger.error("Resource not found: {}", exception.getMessage(), exception);
@@ -30,14 +38,6 @@ public class CommonExceptionHandler {
         logger.error("Conflict: {}", exception.getMessage(), exception);
         ErrorResponse errorResponse = createErrorResponse(HttpStatus.CONFLICT, exception.getMessage(), request);
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
-    }
-
-    // Общий обработчик всех исключений
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception exception, WebRequest request) {
-        logger.error("Internal server error: {}", exception.getMessage(), exception);
-        ErrorResponse errorResponse = createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.", request);
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -63,8 +63,6 @@ public class CommonExceptionHandler {
         );
     }
 
-    @org.jetbrains.annotations.NotNull
-    @org.jetbrains.annotations.Contract("_, _, _, _ -> new")
     private ValidationErrorResponse createErrorResponse(HttpStatus status, String message, WebRequest request, List<ValidationError> errors) {
         return new ValidationErrorResponse(
                 LocalDateTime.now(),
