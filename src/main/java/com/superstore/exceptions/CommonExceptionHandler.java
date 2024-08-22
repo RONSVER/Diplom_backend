@@ -1,21 +1,78 @@
 package com.superstore.exceptions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @ControllerAdvice
 public class CommonExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(CommonExceptionHandler.class);
+
     @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class})
-    public ResponseEntity handleNotFound(Exception exception, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    public ResponseEntity<ErrorResponse> handleNotFound(Exception exception, WebRequest request) {
+        logger.error("Resource not found: {}", exception.getMessage(), exception);
+        ErrorResponse errorResponse = createErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NoUniqueUserEmailException.class)
-    public ResponseEntity handleNoUniqueUserEmailException(Exception exception, WebRequest request) {
-        return ResponseEntity.badRequest().body(exception.getMessage());
+    public ResponseEntity<ErrorResponse> handleNoUniqueUserEmailException(Exception exception, WebRequest request) {
+        logger.error("Conflict: {}", exception.getMessage(), exception);
+        ErrorResponse errorResponse = createErrorResponse(HttpStatus.CONFLICT, exception.getMessage(), request);
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
+
+    // Общий обработчик всех исключений
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(Exception exception, WebRequest request) {
+        logger.error("Internal server error: {}", exception.getMessage(), exception);
+        ErrorResponse errorResponse = createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.", request);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException exception, WebRequest request) {
+        logger.error("Validation error: {}", exception.getMessage(), exception);
+
+        List<ValidationError> errors = exception.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> new ValidationError(fieldError.getField(), fieldError.getDefaultMessage()))
+                .collect(Collectors.toList());
+
+        ValidationErrorResponse errorResponse = createErrorResponse(HttpStatus.BAD_REQUEST, "Validation failed", request, errors);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    private ErrorResponse createErrorResponse(HttpStatus status, String message, WebRequest request) {
+        return new ErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                message,
+                request.getDescription(false)
+        );
+    }
+
+    @org.jetbrains.annotations.NotNull
+    @org.jetbrains.annotations.Contract("_, _, _, _ -> new")
+    private ValidationErrorResponse createErrorResponse(HttpStatus status, String message, WebRequest request, List<ValidationError> errors) {
+        return new ValidationErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                message,
+                request.getDescription(false),
+                errors
+        );
+    }
+
 }

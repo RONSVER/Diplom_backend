@@ -2,10 +2,12 @@ package com.superstore.mapper;
 
 import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
+import com.superstore.dto.UserRegisterDTO;
 import com.superstore.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -35,4 +37,12 @@ public interface UserMapper {
             @Mapping(source = "role", target = "role")
     })
     User userCreateDTOToUser(UserCreateDTO userCreateDTO);
+
+    @Mappings({
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "email", target = "email"),
+            @Mapping(source = "phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "passwordHash", target = "passwordHash"),
+    })
+    User userRegisterDTOToUser(UserRegisterDTO userRegisterDTO);
 }

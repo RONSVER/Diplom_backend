@@ -5,16 +5,17 @@ import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.repository.UserRepository;
 import com.superstore.services.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository dao;
 
@@ -24,13 +25,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return dao.findById(id);
+    public User findById(Long id) {
+        return dao.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("User with ID {} not found", id);
+                    return new UserNotFoundException("User with ID " + id + " not found");
+                });
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return dao.findByEmail(email);
+    public User findByEmail(String email) {
+        return dao.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User with Email " + email + " not found"));
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return dao.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return dao.existsByUserId(id);
     }
 
     @Override
