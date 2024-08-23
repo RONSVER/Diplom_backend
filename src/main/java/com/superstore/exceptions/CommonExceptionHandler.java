@@ -40,6 +40,13 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(InvalidCategoryNameException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCategoryNameException(Exception exception, WebRequest request) {
+        logger.error("Syntax error: {}", exception.getMessage(), exception);
+        ErrorResponse errorResponse = createErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage(), request);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException exception, WebRequest request) {
         logger.error("Validation error: {}", exception.getMessage(), exception);

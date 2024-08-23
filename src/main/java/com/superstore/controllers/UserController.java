@@ -4,6 +4,7 @@ import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.dto.UserRegisterDTO;
 import com.superstore.entity.User;
+import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.mapper.UserMapper;
 import com.superstore.security.AuthenticationService;
 import com.superstore.security.model.JwtAuthenticationResponse;
@@ -77,6 +78,10 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        if (!userService.existsById(id)) {
+            throw new UserNotFoundException("User with ID " + id + " not found");
+        }
+
         User existingUser = userService.findById(id);
 
         User updatedUserEntity = userMapper.userDTOToUser(userDTO);
