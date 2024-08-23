@@ -5,6 +5,7 @@ import com.superstore.entity.Category;
 import com.superstore.mapper.CategoryMapper;
 
 import com.superstore.services.CategoryService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class CategoryController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('Administrator')")
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> addCategory(@Valid @RequestBody CategoryDto categoryDto) {
         Category category = categoryMapper.categoryDTOToCategory(categoryDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(categoryMapper.categoryToCategoryDTO(service.addCategory(category)));
@@ -32,7 +33,7 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto) {
         Category category = categoryMapper.categoryDTOToCategory(categoryDto);
         category.setCategoryId(id);
 

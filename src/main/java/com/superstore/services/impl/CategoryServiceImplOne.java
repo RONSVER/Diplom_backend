@@ -2,8 +2,6 @@ package com.superstore.services.impl;
 
 import com.superstore.entity.Category;
 import com.superstore.exceptions.CategoryNotFoundException;
-import com.superstore.exceptions.InvalidCategoryNameException;
-import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.repository.CategoryRepository;
 import com.superstore.services.CategoryService;
 import lombok.AllArgsConstructor;
@@ -30,11 +28,6 @@ public class CategoryServiceImplOne implements CategoryService {
     public Category editCategory(Long categoryId, Category newCategory) {
         Category existingCategory = dao.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("Category with ID " + categoryId + " not found"));
-
-        if (!newCategory.getName().matches("[\\p{L}]+")) {
-            logger.error("Syntax error in {}", newCategory.getCategoryId());
-            throw new InvalidCategoryNameException("Syntax error in " + newCategory.getCategoryId());
-        }
 
         existingCategory.setName(newCategory.getName());
 
