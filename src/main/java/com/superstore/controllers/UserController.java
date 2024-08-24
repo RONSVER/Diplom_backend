@@ -74,9 +74,24 @@ public class UserController {
         UserDTO savedUser = userMapper.userToUserDTO(userService.save(user));
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
-
+    @Operation(
+            summary = "Обновляет пользователя по ID",
+            description = "Обновляет пользователя на основе переданного идентификатора",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Пользователь найден"),
+                    @ApiResponse(responseCode = "400", description = "Неверный запрос"),
+                    @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+            }
+    )
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable
+                                                  @Parameter(
+                                                          name = "id",
+                                                          description = "Идентификатор пользователя",
+                                                          required = true,
+                                                          in = ParameterIn.PATH
+                                                  )
+                                                  Long id, @RequestBody UserDTO userDTO) {
         User existingUser = userService.findById(id);
 
         User updatedUserEntity = userMapper.userDTOToUser(userDTO);
@@ -90,9 +105,23 @@ public class UserController {
 
         return ResponseEntity.ok(updatedUser);
     }
-
+    @Operation(
+            summary = "Удалить пользователя по ID",
+            description = "Удаляет пользователя на основе переданного идентификатора",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Пользователь удалён"),
+                    @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+            }
+    )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable
+                                               @Parameter(
+                                                       name = "id",
+                                                       description = "Идентификатор пользователя",
+                                                       required = true,
+                                                       in = ParameterIn.PATH
+                                               )
+                                               Long id) {
         if (userService.existsById(id)) {
             userService.deleteById(id);
             return ResponseEntity.noContent().build();
@@ -107,6 +136,14 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "Регистрация пользователя",
+            description = "Регистрирует пользователя",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Пользователь создан"),
+                    @ApiResponse(responseCode = "400", description = "Неверный запрос")
+            }
+    )
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
         if (userService.existsByEmail(userCreateDTO.email())) {
