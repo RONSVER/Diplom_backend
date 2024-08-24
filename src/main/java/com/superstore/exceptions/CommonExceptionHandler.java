@@ -26,7 +26,7 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class})
+    @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class, ProductNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(Exception exception, WebRequest request) {
         logger.error("Resource not found: {}", exception.getMessage(), exception);
         ErrorResponse errorResponse = createErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request);
