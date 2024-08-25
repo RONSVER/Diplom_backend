@@ -1,7 +1,6 @@
 package com.superstore.services.impl;
 
 import com.superstore.entity.Category;
-import com.superstore.exceptions.CategoryNotFoundException;
 import com.superstore.repository.CategoryRepository;
 import com.superstore.services.CategoryService;
 import lombok.AllArgsConstructor;
