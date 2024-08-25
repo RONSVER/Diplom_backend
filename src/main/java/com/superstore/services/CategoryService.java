@@ -16,4 +16,8 @@ public interface CategoryService {
     Optional<Category> findById(Long id);
 
     void deleteById(Long id);
+
+    Category findByName(String name);
+
+    boolean existsByName(String name);
 }

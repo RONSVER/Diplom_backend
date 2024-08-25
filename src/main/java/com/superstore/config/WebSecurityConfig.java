@@ -43,7 +43,8 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, "/v1/users", "/v1/users/login").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/v1/api-docs", "/swagger-ui/index.html").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/products").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/api-docs", "/swagger-ui/index.html").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session

@@ -7,14 +7,13 @@ import com.superstore.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class ProductServiceImplOne implements ProductService {
+public class ProductServiceImpl implements ProductService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImplOne.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     private ProductRepository dao;
 

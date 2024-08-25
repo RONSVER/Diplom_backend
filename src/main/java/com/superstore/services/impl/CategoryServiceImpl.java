@@ -11,9 +11,19 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class CategoryServiceImplOne implements CategoryService {
+public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository dao;
+
+    @Override
+    public Category findByName(String name) {
+        return dao.findByName(name);
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return dao.existsByName(name);
+    }
 
     @Override
     public Category addCategory(Category category) {
@@ -38,7 +48,7 @@ public class CategoryServiceImplOne implements CategoryService {
     @Override
     public Optional<Category> findById(Long id) {
 
-         return dao.findById(id);
+        return dao.findById(id);
     }
 
     @Override

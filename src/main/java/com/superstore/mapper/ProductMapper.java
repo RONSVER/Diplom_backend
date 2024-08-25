@@ -2,6 +2,7 @@ package com.superstore.mapper;
 
 import com.superstore.dto.ProductDto;
 import com.superstore.entity.Product;
+import com.superstore.entity.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -15,14 +16,18 @@ public interface ProductMapper {
             @Mapping(target = "price", source = "entity.price"),
             @Mapping(target = "discountPrice", source = "entity.discountPrice"),
             @Mapping(target = "imageURL", source = "entity.imageURL"),
+            @Mapping(target = "category", expression = "java(entity.getCategory().getName())")
     })
     ProductDto productToProductDto(Product entity);
 
-    @Mapping(source = "productId", target = "productId")
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "description", target = "description")
-    @Mapping(source = "price", target = "price")
-    @Mapping(source = "discountPrice", target = "discountPrice")
-    @Mapping(source = "imageURL", target = "imageURL")
-    Product productDtoToProduct(ProductDto entity);
+    @Mappings({
+            @Mapping(target = "productId", source = "productId"),
+            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "description", source = "description"),
+            @Mapping(target = "price", source = "price"),
+            @Mapping(target = "discountPrice", source = "discountPrice"),
+            @Mapping(target = "imageURL", source = "imageURL"),
+            @Mapping(target = "category", ignore = true)
+    })
+    Product productDtoToProduct(ProductDto productDto);
 }
