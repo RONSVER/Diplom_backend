@@ -12,11 +12,21 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CategoryServiceImplOne implements CategoryService {
+public class CategoryServiceImpl implements CategoryService {
 
     private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImplOne.class);
 
     private final CategoryRepository dao;
+
+    @Override
+    public Category findByName(String name) {
+        return dao.findByName(name);
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return dao.existsByName(name);
+    }
 
     @Override
     public Category addCategory(Category category) {

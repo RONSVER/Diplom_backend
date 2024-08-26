@@ -41,10 +41,10 @@ public class Product {
     @Column
     private BigDecimal discountPrice;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "product")
@@ -58,4 +58,16 @@ public class Product {
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
     private List<Favorite> favorites;
+
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

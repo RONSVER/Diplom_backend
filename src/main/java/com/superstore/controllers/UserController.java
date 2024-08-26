@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserService service;
     private final UserMapper userMapper;
     private final AuthenticationService authenticationService;
     private final PasswordEncoder passwordEncoder;
@@ -38,7 +38,7 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasAuthority('Administrator')")
     public ResponseEntity<List<UserDTO>> findAll() {
-        List<UserDTO> users = userService.findAll()
+        List<UserDTO> users = service.findAll()
                 .stream()
                 .map(userMapper::userToUserDTO)
                 .collect(Collectors.toList());
@@ -64,14 +64,14 @@ public class UserController {
                                                     in = ParameterIn.PATH
                                             )
                                             Long id) {
-        return ResponseEntity.ok(userMapper.userToUserDTO(userService.findById(id)));
+        return ResponseEntity.ok(userMapper.userToUserDTO(service.findById(id)));
     }
 
     @PostMapping
     public ResponseEntity<UserDTO> save(@Valid @RequestBody UserCreateDTO userCreateDTO) {
         User user = userMapper.userCreateDTOToUser(userCreateDTO);
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        UserDTO savedUser = userMapper.userToUserDTO(userService.save(user));
+        UserDTO savedUser = userMapper.userToUserDTO(service.save(user));
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
@@ -93,7 +93,7 @@ public class UserController {
                                                       in = ParameterIn.PATH
                                               )
                                               Long id, @RequestBody UserDTO userDTO) {
-        User existingUser = userService.findById(id);
+        User existingUser = service.findById(id);
 
         User updatedUserEntity = userMapper.userDTOToUser(userDTO);
 
@@ -102,7 +102,7 @@ public class UserController {
         existingUser.setPhoneNumber(updatedUserEntity.getPhoneNumber());
         existingUser.setRole(updatedUserEntity.getRole());
 
-        UserDTO updatedUser = userMapper.userToUserDTO(userService.save(existingUser));
+        UserDTO updatedUser = userMapper.userToUserDTO(service.save(existingUser));
 
         return ResponseEntity.ok(updatedUser);
     }
@@ -124,8 +124,8 @@ public class UserController {
                                                    in = ParameterIn.PATH
                                            )
                                            Long id) {
-        if (userService.existsById(id)) {
-            userService.deleteById(id);
+        if (service.existsById(id)) {
+            service.deleteById(id);
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -163,14 +163,14 @@ public class UserController {
     )
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
-        if (userService.existsByEmail(userCreateDTO.email())) {
+        if (service.existsByEmail(userCreateDTO.email())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email is already in use: " + userCreateDTO.email());
         }
 
         User user = userMapper.userRegisterDTOToUser(userCreateDTO);
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         user.setRole(User.Role.Client);
-        userService.save(user);
+        service.save(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("You have been registered successfully!");
     }
