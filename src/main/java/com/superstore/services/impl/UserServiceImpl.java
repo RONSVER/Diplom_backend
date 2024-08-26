@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO) {
-        if (dao.existsByEmail(userRegisterDTO.email())) {
+        if (existsByEmail(userRegisterDTO.email())) {
             throw new NoUniqueUserEmailException("Email is already in use: " + userRegisterDTO.email());
         }
         User user = userMapper.userRegisterDTOToUser(userRegisterDTO);
@@ -81,6 +81,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserCreateDTO userCreateDTO) {
+        if (existsByEmail(userCreateDTO.email())) {
+            throw new NoUniqueUserEmailException("Email is already in use: " + userCreateDTO.email());
+        }
         User user = userMapper.userCreateDTOToUser(userCreateDTO);
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         return userMapper.userToUserDTO(dao.save(user));
