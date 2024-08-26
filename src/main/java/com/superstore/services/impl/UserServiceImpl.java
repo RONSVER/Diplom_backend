@@ -56,6 +56,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(Long id) {
+        if (dao.findById(id).isEmpty()) {
+            logger.error("User with ID {} not found", id);
+            throw new UserNotFoundException("User with ID " + id + " not found");
+        }
+
         dao.deleteById(id);
     }
 }

@@ -3,7 +3,6 @@ package com.superstore.services;
 import com.superstore.entity.Category;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CategoryService {
 
@@ -13,11 +12,13 @@ public interface CategoryService {
 
     List<Category> getAllCategory();
 
-    Optional<Category> findById(Long id);
+    Category findById(Long id);
 
     void deleteById(Long id);
 
     Category findByName(String name);
 
     boolean existsByName(String name);
+
+    boolean existsByCategoryId(Long id);
 }
