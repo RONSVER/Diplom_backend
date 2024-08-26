@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 public record ProductDto(
-
+        // make schema for swagger (For example: @Schema(description = "description text", example = "1")
         Long productId,
 
         @NotBlank(message = "Name is required")
