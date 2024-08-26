@@ -31,6 +31,14 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    private User createAndSaveUser(String email, User user, String hexPassword) {
+        if (existsByEmail(email)) {
+            throw new NoUniqueUserEmailException("Email is already in use: " + email);
+        }
+        user.setPasswordHash(hexPassword);
+        return dao.save(user);
+    }
+
     @Override
     public UserDTO findById(Long id) {
         return dao.findById(id).map(userMapper::userToUserDTO)
@@ -58,24 +66,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO, String hexPassword) {
-        if (existsByEmail(userRegisterDTO.email())) {
-            throw new NoUniqueUserEmailException("Email is already in use: " + userRegisterDTO.email());
-        }
         User user = userMapper.userRegisterDTOToUser(userRegisterDTO);
-        user.setPasswordHash(hexPassword);
-        user.setRole(User.Role.Client);
-        dao.save(user);
+        user.setRole(User.Role.Client);  // Установка роли только для регистрации
+        createAndSaveUser(userRegisterDTO.email(), user, hexPassword);
         return userRegisterDTO;
     }
 
     @Override
     public UserDTO createUser(UserDTO userCreateDTO, String hexPassword) {
-        if (existsByEmail(userCreateDTO.email())) {
-            throw new NoUniqueUserEmailException("Email is already in use: " + userCreateDTO.email());
-        }
         User user = userMapper.userDTOToUser(userCreateDTO);
-        user.setPasswordHash(hexPassword);
-        return userMapper.userToUserDTO(dao.save(user));
+        User savedUser = createAndSaveUser(userCreateDTO.email(), user, hexPassword);
+        return userMapper.userToUserDTO(savedUser);
     }
 
     @Override
