@@ -1,6 +1,5 @@
 package com.superstore.services.impl;
 
-import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.dto.UserRegisterDTO;
 import com.superstore.entity.User;
@@ -9,30 +8,20 @@ import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.mapper.UserMapper;
 import com.superstore.repository.UserRepository;
 import com.superstore.services.UserService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
     private final UserRepository dao;
     private final UserMapper userMapper;
-
-    @Lazy
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserDTO> findAll() {
@@ -52,8 +41,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) {
-        return dao.findByEmail(email)
+    public UserDTO findByEmail(String email) {
+        return dao.findByEmail(email).map(userMapper::userToUserDTO)
                 .orElseThrow(() -> new UserNotFoundException("User with Email " + email + " not found"));
     }
 
@@ -68,24 +57,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO) {
+    public UserRegisterDTO registerUser(UserRegisterDTO userRegisterDTO, String hexPassword) {
         if (existsByEmail(userRegisterDTO.email())) {
             throw new NoUniqueUserEmailException("Email is already in use: " + userRegisterDTO.email());
         }
         User user = userMapper.userRegisterDTOToUser(userRegisterDTO);
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        user.setPasswordHash(hexPassword);
         user.setRole(User.Role.Client);
         dao.save(user);
         return userRegisterDTO;
     }
 
     @Override
-    public UserDTO createUser(UserCreateDTO userCreateDTO) {
+    public UserDTO createUser(UserDTO userCreateDTO, String hexPassword) {
         if (existsByEmail(userCreateDTO.email())) {
             throw new NoUniqueUserEmailException("Email is already in use: " + userCreateDTO.email());
         }
-        User user = userMapper.userCreateDTOToUser(userCreateDTO);
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        User user = userMapper.userDTOToUser(userCreateDTO);
+        user.setPasswordHash(hexPassword);
         return userMapper.userToUserDTO(dao.save(user));
     }
 
@@ -103,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(Long id) {
-        if (existsById(id)) {
+        if (!existsById(id)) {
             logger.error("User with ID {} not found", id);
             throw new UserNotFoundException("User with ID " + id + " not found");
         }

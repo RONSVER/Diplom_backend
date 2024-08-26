@@ -1,6 +1,5 @@
 package com.superstore.controllers;
 
-import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.dto.UserRegisterDTO;
 import com.superstore.security.AuthenticationService;
@@ -16,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +27,7 @@ public class UserController {
 
     private final UserService service;
     private final AuthenticationService authenticationService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     @PreAuthorize("hasAuthority('Administrator')")
@@ -57,9 +58,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> save(@Valid @RequestBody UserCreateDTO userCreateDTO) {
+    public ResponseEntity<UserDTO> save(@Valid @RequestBody UserDTO userCreateDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.createUser(userCreateDTO));
+                .body(service.createUser(userCreateDTO, passwordEncoder.encode(userCreateDTO.passwordHash())));
     }
 
     @Operation(
@@ -137,7 +138,8 @@ public class UserController {
     )
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
-        service.registerUser(userCreateDTO);
+
+        service.registerUser(userCreateDTO, passwordEncoder.encode(userCreateDTO.passwordHash()));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
