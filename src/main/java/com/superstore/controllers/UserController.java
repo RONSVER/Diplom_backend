@@ -3,13 +3,10 @@ package com.superstore.controllers;
 import com.superstore.dto.UserCreateDTO;
 import com.superstore.dto.UserDTO;
 import com.superstore.dto.UserRegisterDTO;
-import com.superstore.entity.User;
-import com.superstore.mapper.UserMapper;
 import com.superstore.security.AuthenticationService;
 import com.superstore.security.model.JwtAuthenticationResponse;
 import com.superstore.security.model.SignInRequest;
 import com.superstore.services.UserService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -19,11 +16,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -31,18 +26,12 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService service;
-    private final UserMapper userMapper;
     private final AuthenticationService authenticationService;
-    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     @PreAuthorize("hasAuthority('Administrator')")
     public ResponseEntity<List<UserDTO>> findAll() {
-        List<UserDTO> users = service.findAll()
-                .stream()
-                .map(userMapper::userToUserDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(service.findAll());
     }
 
     @Operation(
@@ -64,15 +53,13 @@ public class UserController {
                                                     in = ParameterIn.PATH
                                             )
                                             Long id) {
-        return ResponseEntity.ok(userMapper.userToUserDTO(service.findById(id)));
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
     public ResponseEntity<UserDTO> save(@Valid @RequestBody UserCreateDTO userCreateDTO) {
-        User user = userMapper.userCreateDTOToUser(userCreateDTO);
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        UserDTO savedUser = userMapper.userToUserDTO(service.save(user));
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.createUser(userCreateDTO));
     }
 
     @Operation(
@@ -93,17 +80,8 @@ public class UserController {
                                                       in = ParameterIn.PATH
                                               )
                                               Long id, @RequestBody UserDTO userDTO) {
-        User existingUser = service.findById(id);
 
-        User updatedUserEntity = userMapper.userDTOToUser(userDTO);
-
-        existingUser.setName(updatedUserEntity.getName());
-        existingUser.setEmail(updatedUserEntity.getEmail());
-        existingUser.setPhoneNumber(updatedUserEntity.getPhoneNumber());
-        existingUser.setRole(updatedUserEntity.getRole());
-
-        UserDTO updatedUser = userMapper.userToUserDTO(service.save(existingUser));
-
+        UserDTO updatedUser = service.updateUser(id ,userDTO);
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -124,12 +102,8 @@ public class UserController {
                                                    in = ParameterIn.PATH
                                            )
                                            Long id) {
-        if (service.existsById(id)) {
-            service.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        service.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Operation(
@@ -162,16 +136,8 @@ public class UserController {
             }
     )
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
-        if (service.existsByEmail(userCreateDTO.email())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email is already in use: " + userCreateDTO.email());
-        }
-
-        User user = userMapper.userRegisterDTOToUser(userCreateDTO);
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        user.setRole(User.Role.Client);
-        service.save(user);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body("You have been registered successfully!");
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
+        service.registerUser(userCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

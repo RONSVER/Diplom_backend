@@ -1,6 +1,7 @@
 package com.superstore.services.impl;
 
 import com.superstore.entity.Category;
+import com.superstore.exceptions.CategoryNotFoundException;
 import com.superstore.repository.CategoryRepository;
 import com.superstore.services.CategoryService;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImplOne.class);
+    private static final Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     private final CategoryRepository dao;
 
