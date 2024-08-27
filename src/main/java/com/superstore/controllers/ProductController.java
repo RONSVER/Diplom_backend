@@ -22,37 +22,37 @@ public class ProductController {
     private CategoryService categoryService;
     private ProductMapper productMapper;
 
-    @PostMapping
-    @PreAuthorize("hasAuthority('Administrator')")
-    public ResponseEntity<ProductDto> save(@Valid @RequestBody ProductDto productDto) {
-        Product product = productMapper.productDtoToProduct(productDto);
+//    @PostMapping
+//    @PreAuthorize("hasAuthority('Administrator')")
+//    public ResponseEntity<ProductDto> save(@Valid @RequestBody ProductDto productDto) {
+//        Product product = productMapper.productDtoToProduct(productDto);
+//
+//        if (!categoryService.existsByName(productDto.category())) {
+//            throw new CategoryNotFoundException("Category with name " + productDto.category() + " not found");
+//        }
+//
+//        product.setCategory(categoryService.findByName(productDto.category()));
+//
+//        return ResponseEntity.status(HttpStatus.CREATED)
+//                .body(productMapper.productToProductDto(service.save(product)));
+//    }
 
-        if (!categoryService.existsByName(productDto.category())) {
-            throw new CategoryNotFoundException("Category with name " + productDto.category() + " not found");
-        }
 
-        product.setCategory(categoryService.findByName(productDto.category()));
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productMapper.productToProductDto(service.save(product)));
-    }
-
-
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('Administrator')")
-    public ResponseEntity<ProductDto> editProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
-        Product product = productMapper.productDtoToProduct(productDto);
-        product.setProductId(id);
-
-        if (!categoryService.existsByName(productDto.category())) {
-            throw new CategoryNotFoundException("Category with name " + productDto.category() + " not found");
-        }
-
-        product.setCategory(categoryService.findByName(productDto.category()));
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(productMapper.productToProductDto(service.editProduct(id, product)));
-    }
+//    @PutMapping("/{id}")
+//    @PreAuthorize("hasAuthority('Administrator')")
+//    public ResponseEntity<ProductDto> editProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
+//        Product product = productMapper.productDtoToProduct(productDto);
+//        product.setProductId(id);
+//
+//        if (!categoryService.existsByName(productDto.category())) {
+//            throw new CategoryNotFoundException("Category with name " + productDto.category() + " not found");
+//        }
+//
+//        product.setCategory(categoryService.findByName(productDto.category()));
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(productMapper.productToProductDto(service.editProduct(id, product)));
+//    }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
