@@ -1,18 +1,16 @@
 package com.superstore.controllers;
 
 import com.superstore.dto.CategoryDto;
-import com.superstore.entity.Category;
-import com.superstore.exceptions.CategoryNotFoundException;
 import com.superstore.mapper.CategoryMapper;
-
 import com.superstore.services.CategoryService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/categories")
@@ -22,46 +20,37 @@ public class CategoryController {
     private CategoryService service;
     private final CategoryMapper categoryMapper;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @PreAuthorize("hasAuthority('Administrator')")
-    public CategoryDto addCategory(@RequestBody CategoryDto categoryDto) {
-        Category category = categoryMapper.categoryDTOToCategory(categoryDto);
-        return categoryMapper.categoryToCategoryDTO(service.addCategory(category));
+    public ResponseEntity<CategoryDto> save(@Valid @RequestBody CategoryDto categoryDto) {
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createCategory(categoryDto));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
-    public CategoryDto editCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
-        if (!service.findById(id).isPresent()) {
-            return null;
-        }
-
-        Category byId = service.findById(id).get();
-        byId.setName(categoryDto.name());
-        return categoryMapper.categoryToCategoryDTO(service.addCategory(byId));
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto) {
+        CategoryDto updatedCategory = service.editCategory(id, categoryDto);
+        return ResponseEntity.ok(updatedCategory);
     }
 
+
     @GetMapping
-    public List<CategoryDto> getAllCategory() {
-        return service.getAllCategory()
-                .stream()
-                .map(categoryMapper::categoryToCategoryDTO)
-                .collect(Collectors.toList()
-                );
+    public ResponseEntity<List<CategoryDto>> getAllCategory() {
+        return ResponseEntity.ok(service.getAllCategory());
     }
 
 
     @GetMapping("/{id}")
-    public CategoryDto findById(@PathVariable Long id) {
-
-        return categoryMapper.categoryToCategoryDTO(service.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("No category with id " + id)));
+    public ResponseEntity<CategoryDto> findById(@PathVariable Long id) {
+        return ResponseEntity
+                .ok(service.findById(id));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
-    public void deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         service.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

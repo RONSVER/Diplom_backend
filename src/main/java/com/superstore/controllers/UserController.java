@@ -1,18 +1,12 @@
 package com.superstore.controllers;
 
-import com.superstore.dto.UserCreateDTO;
+import com.superstore.controllers.swagger.UserControllerSwagger;
 import com.superstore.dto.UserDTO;
 import com.superstore.dto.UserRegisterDTO;
-import com.superstore.entity.User;
-import com.superstore.mapper.UserMapper;
 import com.superstore.security.AuthenticationService;
 import com.superstore.security.model.JwtAuthenticationResponse;
 import com.superstore.security.model.SignInRequest;
 import com.superstore.services.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,155 +16,55 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/users")
 @AllArgsConstructor
-public class UserController {
+public class UserController implements UserControllerSwagger {
 
-    private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserService service;
     private final AuthenticationService authenticationService;
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     @PreAuthorize("hasAuthority('Administrator')")
     public ResponseEntity<List<UserDTO>> findAll() {
-        List<UserDTO> users = userService.findAll()
-                .stream()
-                .map(userMapper::userToUserDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(service.findAll());
     }
-
-    @Operation(
-            summary = "Получить пользователя по ID",
-            description = "Возвращает пользователя на основе переданного идентификатора",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Пользователь найден"),
-                    @ApiResponse(responseCode = "404", description = "Пользователь не найден")
-            }
-    )
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
-    public ResponseEntity<UserDTO> findById(@PathVariable
-                                            @Parameter(
-                                                    name = "id",
-                                                    description = "Идентификатор пользователя",
-                                                    required = true,
-                                                    in = ParameterIn.PATH
-                                            )
-                                            Long id) {
-        return ResponseEntity.ok(userMapper.userToUserDTO(userService.findById(id)));
+    public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> save(@Valid @RequestBody UserCreateDTO userCreateDTO) {
-        User user = userMapper.userCreateDTOToUser(userCreateDTO);
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        UserDTO savedUser = userMapper.userToUserDTO(userService.save(user));
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    public ResponseEntity<UserDTO> save(@Valid @RequestBody UserDTO userCreateDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.createUser(userCreateDTO, passwordEncoder.encode(userCreateDTO.passwordHash())));
     }
 
-    @Operation(
-            summary = "Обновляет пользователя по ID",
-            description = "Обновляет пользователя на основе переданного идентификатора",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Пользователь найден"),
-                    @ApiResponse(responseCode = "400", description = "Неверный запрос"),
-                    @ApiResponse(responseCode = "404", description = "Пользователь не найден")
-            }
-    )
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable
-                                              @Parameter(
-                                                      name = "id",
-                                                      description = "Идентификатор пользователя",
-                                                      required = true,
-                                                      in = ParameterIn.PATH
-                                              )
-                                              Long id, @RequestBody UserDTO userDTO) {
-        User existingUser = userService.findById(id);
-
-        User updatedUserEntity = userMapper.userDTOToUser(userDTO);
-
-        existingUser.setName(updatedUserEntity.getName());
-        existingUser.setEmail(updatedUserEntity.getEmail());
-        existingUser.setPhoneNumber(updatedUserEntity.getPhoneNumber());
-        existingUser.setRole(updatedUserEntity.getRole());
-
-        UserDTO updatedUser = userMapper.userToUserDTO(userService.save(existingUser));
-
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        UserDTO updatedUser = service.updateUser(id ,userDTO);
         return ResponseEntity.ok(updatedUser);
     }
 
-    @Operation(
-            summary = "Удалить пользователя по ID",
-            description = "Удаляет пользователя на основе переданного идентификатора",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Пользователь удалён"),
-                    @ApiResponse(responseCode = "404", description = "Пользователь не найден")
-            }
-    )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable
-                                           @Parameter(
-                                                   name = "id",
-                                                   description = "Идентификатор пользователя",
-                                                   required = true,
-                                                   in = ParameterIn.PATH
-                                           )
-                                           Long id) {
-        if (userService.existsById(id)) {
-            userService.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        service.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @Operation(
-            summary = "Аутентификация пользователя",
-            description = "Аутентифицирует пользователя",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Пользователь найден"),
-                    @ApiResponse(responseCode = "401", description = "Пользователь не авторизован")
-            }
-    )
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody
-                                                           @Parameter(
-                                                                   name = "id",
-                                                                   description = "Идентификатор пользователя",
-                                                                   required = true,
-                                                                   in = ParameterIn.PATH
-                                                           )
-                                                           SignInRequest request) {
+    public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody SignInRequest request) {
         JwtAuthenticationResponse response = authenticationService.authenticate(request);
         return ResponseEntity.ok(response);
     }
 
-    @Operation(
-            summary = "Регистрация пользователя",
-            description = "Регистрирует пользователя",
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "Пользователь создан"),
-                    @ApiResponse(responseCode = "400", description = "Неверный запрос")
-            }
-    )
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
-        if (userService.existsByEmail(userCreateDTO.email())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email is already in use: " + userCreateDTO.email());
-        }
-
-        User user = userMapper.userRegisterDTOToUser(userCreateDTO);
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-        user.setRole(User.Role.Client);
-        userService.save(user);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body("You have been registered successfully!");
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
+        service.registerUser(userCreateDTO, passwordEncoder.encode(userCreateDTO.passwordHash()));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

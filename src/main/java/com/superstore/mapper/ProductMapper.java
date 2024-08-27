@@ -1,0 +1,33 @@
+package com.superstore.mapper;
+
+import com.superstore.dto.ProductDto;
+import com.superstore.entity.Product;
+import com.superstore.entity.Category;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+
+@Mapper(componentModel = "spring")
+public interface ProductMapper {
+    @Mappings({
+            @Mapping(target = "productId", source = "entity.productId"),
+            @Mapping(target = "name", source = "entity.name"),
+            @Mapping(target = "description", source = "entity.description"),
+            @Mapping(target = "price", source = "entity.price"),
+            @Mapping(target = "discountPrice", source = "entity.discountPrice"),
+            @Mapping(target = "imageURL", source = "entity.imageURL"),
+            @Mapping(target = "category", expression = "java(entity.getCategory().getName())")
+    })
+    ProductDto productToProductDto(Product entity);
+
+    @Mappings({
+            @Mapping(target = "productId", source = "productId"),
+            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "description", source = "description"),
+            @Mapping(target = "price", source = "price"),
+            @Mapping(target = "discountPrice", source = "discountPrice"),
+            @Mapping(target = "imageURL", source = "imageURL"),
+            @Mapping(target = "category", ignore = true)
+    })
+    Product productDtoToProduct(ProductDto productDto);
+}
