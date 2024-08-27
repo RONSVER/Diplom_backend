@@ -1,22 +1,22 @@
 package com.superstore.services;
 
-import com.superstore.entity.Category;
+import com.superstore.dto.CategoryDto;
 
 import java.util.List;
 
 public interface CategoryService {
 
-    Category addCategory(Category category);
+    CategoryDto createCategory(CategoryDto category);
 
-    Category editCategory(Long categoryId, Category category);
+    CategoryDto editCategory(Long categoryId, CategoryDto category);
 
-    List<Category> getAllCategory();
+    List<CategoryDto> getAllCategory();
 
-    Category findById(Long id);
+    CategoryDto findById(Long id);
 
     void deleteById(Long id);
 
-    Category findByName(String name);
+    CategoryDto findByName(String name);
 
     boolean existsByName(String name);
 
