@@ -1,12 +1,12 @@
 package com.superstore.services;
 
-import com.superstore.entity.Product;
+import com.superstore.dto.ProductDto;
 
 public interface ProductService {
 
-    Product save(Product product);
+    ProductDto createProduct(ProductDto productDto);
 
-    Product editProduct(Long productId, Product product);
+    ProductDto editProduct(Long productId, ProductDto productDto);
 
     void deleteById(Long id);
 }
