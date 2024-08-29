@@ -1,7 +1,6 @@
 package com.superstore.controllers;
 
 import com.superstore.dto.CategoryDto;
-import com.superstore.mapper.CategoryMapper;
 import com.superstore.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,8 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryController {
 
-    private CategoryService service;
-    private final CategoryMapper categoryMapper;
+    private final CategoryService service;
 
     @PostMapping
     @PreAuthorize("hasAuthority('Administrator')")
