@@ -1,8 +1,7 @@
 package com.superstore.dto;
 
-import com.superstore.entity.Category;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
