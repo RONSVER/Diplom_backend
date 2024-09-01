@@ -16,7 +16,7 @@ public interface ProductMapper {
             @Mapping(target = "price", source = "price"),
             @Mapping(target = "discountPrice", source = "discountPrice"),
             @Mapping(target = "imageURL", source = "imageURL"),
-            @Mapping(target = "category", expression = "java(entity.getCategory().getName())")
+            @Mapping(target = "categoryId", source = "category.categoryId")
     })
     ProductDto productToProductDto(Product entity);
 
@@ -27,7 +27,7 @@ public interface ProductMapper {
             @Mapping(target = "price", source = "price"),
             @Mapping(target = "discountPrice", source = "discountPrice"),
             @Mapping(target = "imageURL", source = "imageURL"),
-            @Mapping(target = "category", ignore = true)
+            @Mapping(target = "category.categoryId", source = "categoryId")
     })
     Product productDtoToProduct(ProductDto productDto);
 }

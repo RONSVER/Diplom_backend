@@ -9,13 +9,13 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface CartItemMapper {
     @Mappings({
-//            @Mapping(target = "productId", source = "productId"),
+            @Mapping(target = "productId", source = "product.productId"),
             @Mapping(target = "quantity", source = "quantity"),
     })
     CartItemDto cartItemToCartItemDto(CartItem entity);
 
     @Mappings({
-//            @Mapping(source = "productId", target = "productId"),
+            @Mapping(source = "productId", target = "product.productId"),
             @Mapping(source = "quantity", target = "quantity"),
     })
     CartItem cartItemDtoToCartItem(CartItemDto entity);

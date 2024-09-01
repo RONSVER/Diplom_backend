@@ -1,5 +1,6 @@
 package com.superstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,13 +21,14 @@ public class CartItem {
 
     @ManyToOne
     @JoinColumn(name = "cartId", nullable = false)
+    @JsonBackReference
     private Cart cart;
 
     @ManyToOne
     @JoinColumn(name = "productId", nullable = false)
+    @JsonBackReference
     private Product product;
 
     @Column(nullable = false)
     private Integer quantity;
-
 }
