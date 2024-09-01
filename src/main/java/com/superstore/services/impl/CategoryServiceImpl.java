@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto findByName(String name) {
         return dao.findByName(name).map(categoryMapper::categoryToCategoryDTO)
-                .orElseThrow(() -> new CategoryNotFoundException("Category with name " + name + " not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category with category " + name + " not found"));
     }
 
     @Override
@@ -41,6 +41,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
+        if (dao.existsByName(categoryDto.category())) {
+            throw new IllegalArgumentException("Category with name " + categoryDto.category() + " already exists");
+        }
         Category category = categoryMapper.categoryDTOToCategory(categoryDto);
         Category savedCategory = createAndSaveCategory(category);
         return categoryMapper.categoryToCategoryDTO(savedCategory);

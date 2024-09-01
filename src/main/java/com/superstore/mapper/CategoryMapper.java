@@ -10,11 +10,11 @@ import org.mapstruct.Mappings;
 public interface CategoryMapper {
     @Mappings({
             @Mapping(target = "categoryId", source = "categoryId"),
-            @Mapping(target = "name", source = "name"),
+            @Mapping(target = "category", source = "name"),
     })
     CategoryDto categoryToCategoryDTO(Category entity);
 
     @Mapping(source = "categoryId", target = "categoryId")
-    @Mapping(source = "name", target = "name")
+    @Mapping(source = "category", target = "name")
     Category categoryDTOToCategory(CategoryDto categoryDto);
 }
