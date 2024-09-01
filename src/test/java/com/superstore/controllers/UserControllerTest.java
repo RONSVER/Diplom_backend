@@ -41,7 +41,6 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = { "Administrator", "Client" })
-
     public void testFindAll() throws Exception {
         // Arrange
         List<UserDTO> userDTOs = List.of(new UserDTO(1L, "John", "John@gmail.com", "+49-111-111-111", "hashedPassword", User.Role.Client));
