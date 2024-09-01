@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface FavoriteService {
 
-    List<Favorite> findByUser_name(String username);
+    List<Favorite> findByUser_Name(String username);
 }

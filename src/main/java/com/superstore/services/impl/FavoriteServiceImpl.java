@@ -15,7 +15,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     private final FavoriteRepository dao;
 
     @Override
-    public List<Favorite> findByUser_name(String username) {
-        return dao.findByUser_name(username);
+    public List<Favorite> findByUser_Name(String username) {
+        return dao.findByUser_Name(username);
     }
 }

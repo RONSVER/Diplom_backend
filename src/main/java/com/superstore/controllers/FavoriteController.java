@@ -23,6 +23,6 @@ public class FavoriteController {
     @GetMapping
     public ResponseEntity<List<Favorite>> getUserFavorites(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(favoriteService.findByUser_name(userDetails.getUsername()));
+                .body(favoriteService.findByUser_Name(userDetails.getUsername()));
     }
 }
