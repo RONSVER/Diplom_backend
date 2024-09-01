@@ -1,5 +1,7 @@
 package com.superstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,10 +24,12 @@ public class Cart {
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
+    @JsonBackReference
     private User user;
 
     @OneToMany(mappedBy = "cart")
     @ToString.Exclude
+    @JsonManagedReference
     private List<CartItem> cartItems;
 
 }

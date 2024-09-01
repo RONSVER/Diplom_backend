@@ -3,7 +3,9 @@ package com.superstore.services.impl;
 import com.superstore.dto.CartItemDto;
 import com.superstore.entity.Cart;
 import com.superstore.entity.CartItem;
+import com.superstore.entity.Product;
 import com.superstore.entity.User;
+import com.superstore.exceptions.ProductNotFoundException;
 import com.superstore.exceptions.UserNotFoundException;
 import com.superstore.mapper.CartItemMapper;
 import com.superstore.mapper.UserMapper;
@@ -43,28 +45,28 @@ public class CartServiceImpl implements CartService {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("User with id " + userId + " not found");
         }
-        Optional<User> user = userRepository.findById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found"));
 
-        // проверка на продукты и получаение продукта
+        Cart cart = dao.findByUser_UserId(userId).orElseGet(() -> {
+            Cart newCart = new Cart();
+            newCart.setUser(user);
+            return saveCart(newCart);
+        });
 
-        Cart finalCart;
-
-        if (dao.existsByUser_UserId(userId)) {
-            finalCart = dao.findByUser_UserId(userId).get();
-        } else {
-            Cart cart = new Cart();
-            cart.setUser(userMapper.userDTOToUser(userMapper.userToUserDTO(user.get())));
-            finalCart = saveCart(cart);
-        }
+        Product product = productRepository.findById(cartItemDto.productId())
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         CartItem cartItem = new CartItem();
-        cartItem.setCart(finalCart);
-//        cartItem.setProduct(product); получение продукта
+        cartItem.setCart(cart);
+        cartItem.setProduct(product);
         cartItem.setQuantity(cartItemDto.quantity());
-        addCartItem(cartItemMapper.cartItemToCartItemDto(cartItem));
 
-        return finalCart;
+        cartItemRepository.save(cartItem);
+
+        return cart;
     }
+
 
     @Override
     public Cart saveCart(Cart cart) {

@@ -1,5 +1,6 @@
 package com.superstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
+    @JsonManagedReference
     private List<Cart> carts;
 
     @OneToMany(mappedBy = "user")

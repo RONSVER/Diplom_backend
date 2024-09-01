@@ -1,5 +1,6 @@
 package com.superstore.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,6 +50,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
+    @JsonManagedReference
     private List<CartItem> cartItems;
 
     @OneToMany(mappedBy = "product")
