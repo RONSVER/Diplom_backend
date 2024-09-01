@@ -18,15 +18,14 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('Administrator')")
-    public ResponseEntity<ProductDto> save(@Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.createProduct(productDto));
     }
 
-
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
-    public ResponseEntity<ProductDto> editProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(service.editProduct(id, productDto));
     }
@@ -36,5 +35,11 @@ public class ProductController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
+        ProductDto product = service.getProductById(id);
+        return ResponseEntity.ok(product);
     }
 }

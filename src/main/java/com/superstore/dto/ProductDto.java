@@ -22,7 +22,8 @@ public record ProductDto(
         @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
         BigDecimal price,
 
-        @Size(min = 4, message = "Category must be at least 4 characters long")
+        @NotBlank(message = "Category ID is required")
+//        @Size(min = 4, message = "Category must be at least 4 characters long")
         String category,
 
         @DecimalMin(value = "0.0", inclusive = false, message = "Discount price must be greater than zero")
