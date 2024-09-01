@@ -49,8 +49,8 @@ public class CartServiceImpl implements CartService {
 
         Cart finalCart;
 
-        if (dao.existsByUserId(userId)) {
-            finalCart = dao.findByUserId(userId).get();
+        if (dao.existsByUser_UserId(userId)) {
+            finalCart = dao.findByUser_UserId(userId).get();
         } else {
             Cart cart = new Cart();
             cart.setUser(userMapper.userDTOToUser(userMapper.userToUserDTO(user.get())));
