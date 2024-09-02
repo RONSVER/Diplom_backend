@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/products")
 @AllArgsConstructor
@@ -41,5 +44,18 @@ public class ProductController {
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
         ProductDto product = service.getProductById(id);
         return ResponseEntity.ok(product);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductDto>> getProducts(
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false) Boolean hasDiscount,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String order
+    ) {
+        List<ProductDto> products = service.getProducts(minPrice, maxPrice, hasDiscount, categoryId, sortBy, order);
+        return ResponseEntity.ok(products);
     }
 }
