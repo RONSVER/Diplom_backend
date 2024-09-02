@@ -11,6 +11,9 @@ import com.superstore.services.UserService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -99,5 +102,22 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("User with ID " + id + " not found");
         }
         dao.deleteById(id);
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new SecurityException("User is not authenticated");
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            String email = ((UserDetails) principal).getUsername();
+            User user = dao.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with Email " + email + " not found"));
+            return user.getUserId();
+        } else {
+            throw new IllegalArgumentException("The primary authentication object cannot be used to obtain the ID");
+        }
     }
 }

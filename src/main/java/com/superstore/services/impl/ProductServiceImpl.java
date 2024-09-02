@@ -34,7 +34,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final CategoryRepository categoryDao;
 
-
     private Product createAndSaveProduct(Product product) {
         return dao.save(product);
     }
@@ -76,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteById(Long productId) {
-        if (!dao.existsById(productId)) {
+        if (!existsById(productId)) {
             logger.error("Product with id {} not found", productId);
             throw new ProductNotFoundException("Product with id " + productId + " not found");
         }
@@ -121,5 +120,10 @@ public class ProductServiceImpl implements ProductService {
         // Маппинг в DTO
         return products.stream().map(productMapper::productToProductDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean existsById(Long productId) {
+        return dao.existsById(productId);
     }
 }

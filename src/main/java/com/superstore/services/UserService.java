@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserService {
 
+    Long getCurrentUserId();
+
     List<UserDTO> findAll();
 
     UserDTO createUser(UserDTO user, String hexPassword);

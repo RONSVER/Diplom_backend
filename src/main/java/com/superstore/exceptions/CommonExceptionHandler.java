@@ -73,9 +73,9 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // Обработчик IllegalArgumentException
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception, WebRequest request) {
+    // Обработчик IllegalArgumentException и IllegalStateException
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception exception, WebRequest request) {
         logger.error("Invalid argument: {}", exception.getMessage(), exception);
         ErrorResponse errorResponse = createErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -99,5 +99,4 @@ public class CommonExceptionHandler {
                 errors
         );
     }
-
 }

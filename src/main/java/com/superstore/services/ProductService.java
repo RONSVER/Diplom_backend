@@ -15,5 +15,8 @@ public interface ProductService {
 
     List<ProductDto> getProducts(BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, Long categoryId, String sortBy, String order);
 
+    boolean existsById(Long id);
+
     void deleteById(Long id);
+
 }
