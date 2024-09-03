@@ -1,6 +1,7 @@
 package com.superstore.services.impl;
 
 import com.superstore.dto.FavoriteDto;
+import com.superstore.dto.ProductDto;
 import com.superstore.entity.Favorite;
 import com.superstore.entity.Product;
 import com.superstore.entity.User;
@@ -35,6 +36,16 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Override
     public List<Favorite> findByUser_Name(String username) {
         return dao.findByUser_Name(username);
+    }
+
+    @Override
+    public List<ProductDto> getUserFavoriteProducts() {
+        Long currentUserId = userService.getCurrentUserId();
+        List<ProductDto> productDtos = dao.findByUserUserId(currentUserId)
+                .stream()
+                .map(Favorite::getProduct)
+                .map(productMapper::productToProductDto).toList();
+        return productDtos;
     }
 
     @Override

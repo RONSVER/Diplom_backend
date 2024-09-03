@@ -1,6 +1,7 @@
 package com.superstore.controllers;
 
 import com.superstore.dto.FavoriteDto;
+import com.superstore.dto.ProductDto;
 import com.superstore.entity.Favorite;
 import com.superstore.mapper.FavoriteMapper;
 import com.superstore.repository.UserRepository;
@@ -25,19 +26,11 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
     private final FavoriteMapper favoriteMapper;
 
-//    TODO: доделать
     @GetMapping
     @PreAuthorize("hasAuthority('Client') or hasAuthority('Administrator')")
-    public ResponseEntity<List<FavoriteDto>> getUserFavorites(@AuthenticationPrincipal UserDetails userDetails) {
-        System.out.println(userDetails);
+    public ResponseEntity<List<ProductDto>> getUserFavorites() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(
-                        favoriteService
-                                .findByUser_Name(userDetails.getUsername())
-                                .stream()
-                                .map(favoriteMapper::favoriteToFavoriteDto)
-                                .collect(Collectors.toList())
-                );
+                .body(favoriteService.getUserFavoriteProducts());
     }
 
     @PostMapping("/{productId}")
