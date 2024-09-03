@@ -1,12 +1,22 @@
 package com.superstore.services;
 
-import com.superstore.entity.Product;
+import com.superstore.dto.ProductDto;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface ProductService {
 
-    Product save(Product product);
+    ProductDto createProduct(ProductDto productDto);
 
-    Product editProduct(Long productId, Product product);
+    ProductDto editProduct(Long productId, ProductDto productDto);
+
+    ProductDto getProductById(Long productId);
+
+    List<ProductDto> getProducts(BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, Long categoryId, String sortBy, String order);
+
+    boolean existsById(Long id);
 
     void deleteById(Long id);
+
 }

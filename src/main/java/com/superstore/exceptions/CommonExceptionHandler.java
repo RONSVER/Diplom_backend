@@ -26,13 +26,15 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class, ProductNotFoundException.class})
+    // Обработчик исключений для ресурс не найден
+    @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class, ProductNotFoundException.class, CartNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(Exception exception, WebRequest request) {
         logger.error("Resource not found: {}", exception.getMessage(), exception);
         ErrorResponse errorResponse = createErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    // Обработчик для конфликта email уже существует
     @ExceptionHandler(NoUniqueUserEmailException.class)
     public ResponseEntity<ErrorResponse> handleNoUniqueUserEmailException(Exception exception, WebRequest request) {
         logger.error("Conflict: {}", exception.getMessage(), exception);
@@ -40,6 +42,7 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    // Обработчик для ошибо некорректное имя категории
     @ExceptionHandler(InvalidCategoryNameException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCategoryNameException(Exception exception, WebRequest request) {
         logger.error("Syntax error: {}", exception.getMessage(), exception);
@@ -47,6 +50,7 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
+    // Обработчик ошибок валидации
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException exception, WebRequest request) {
         logger.error("Validation error: {}", exception.getMessage(), exception);
@@ -58,6 +62,22 @@ public class CommonExceptionHandler {
                 .collect(Collectors.toList());
 
         ValidationErrorResponse errorResponse = createErrorResponse(HttpStatus.BAD_REQUEST, "Validation failed", request, errors);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    // Обработчик для ошибок фильтрации и сортировки
+    @ExceptionHandler(InvalidFilterException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidFilterException(InvalidFilterException exception, WebRequest request) {
+        logger.error("Invalid filter: {}", exception.getMessage(), exception);
+        ErrorResponse errorResponse = createErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    // Обработчик IllegalArgumentException и IllegalStateException
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception exception, WebRequest request) {
+        logger.error("Invalid argument: {}", exception.getMessage(), exception);
+        ErrorResponse errorResponse = createErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -79,5 +99,4 @@ public class CommonExceptionHandler {
                 errors
         );
     }
-
 }

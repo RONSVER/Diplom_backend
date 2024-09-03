@@ -4,6 +4,7 @@ import com.superstore.entity.Category;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -27,8 +28,10 @@ public record ProductDto(
         @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
         BigDecimal price,
 
+        @NotBlank(message = "Category ID is required")
+//        @Size(min = 4, message = "Category must be at least 4 characters long")
         @Schema(description = "Категория продукта", type = "String", example = "Tools and equipment (Инструменты и оборудование)")
-        @Size(min = 4, message = "Category must be at least 4 characters long")
+       // @Size(min = 4, message = "Category must be at least 4 characters long")
         String category,
 
         @Schema(description = "Цена со скидкой", type = "BigDecimal", example = "7,500")

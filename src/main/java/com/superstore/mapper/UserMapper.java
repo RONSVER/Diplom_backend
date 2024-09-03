@@ -9,29 +9,16 @@ import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    @Mappings({
+/*    @Mappings({
             @Mapping(target = "userId", source = "userId"),
             @Mapping(target = "name", source = "name"),
             @Mapping(target = "email", source = "email"),
             @Mapping(target = "phoneNumber", source = "phoneNumber"),
             @Mapping(target = "role", source = "role"),
-    })
+    })*/
     UserDTO userToUserDTO(User entity);
 
-    @Mappings({
-        @Mapping(source = "userId", target = "userId"),
-        @Mapping(source = "name", target = "name"),
-        @Mapping(source = "email", target = "email"),
-        @Mapping(source = "phoneNumber", target = "phoneNumber"),
-        @Mapping(source = "role", target = "role")
-    })
     User userDTOToUser(UserDTO userDTO);
 
-    @Mappings({
-            @Mapping(source = "name", target = "name"),
-            @Mapping(source = "email", target = "email"),
-            @Mapping(source = "phoneNumber", target = "phoneNumber"),
-            @Mapping(source = "passwordHash", target = "passwordHash"),
-    })
     User userRegisterDTOToUser(UserRegisterDTO userRegisterDTO);
 }
