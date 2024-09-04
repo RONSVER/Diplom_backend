@@ -73,6 +73,7 @@ public class CartServiceImpl implements CartService {
         return new CartDto(cart.getCartId(), cart.getUser().getUserId(), cartItemDtos, total);
     }
 
+    @Override
     @Transactional
     public CartDto addProductToCart(Long productId, Integer quantity) {
 
@@ -103,6 +104,7 @@ public class CartServiceImpl implements CartService {
         return getCart();
     }
 
+    @Override
     @Transactional
     public void removeProductFromCart(Long productId) {
         long userId = userService.getCurrentUserId();
