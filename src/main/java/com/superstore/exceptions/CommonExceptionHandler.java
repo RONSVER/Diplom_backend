@@ -27,7 +27,7 @@ public class CommonExceptionHandler {
     }
 
     // Обработчик исключений для ресурс не найден
-    @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class, ProductNotFoundException.class, CartNotFoundException.class})
+    @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class, ProductNotFoundException.class, CartNotFoundException.class, CartItemNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(Exception exception, WebRequest request) {
         logger.error("Resource not found: {}", exception.getMessage(), exception);
         ErrorResponse errorResponse = createErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request);

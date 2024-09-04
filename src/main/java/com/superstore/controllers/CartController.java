@@ -1,26 +1,73 @@
 package com.superstore.controllers;
 
-import com.superstore.dto.CartItemDto;
-import com.superstore.entity.Cart;
+import com.superstore.dto.CartDto;
 import com.superstore.services.CartService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+
+
+//    TODO: возможно нужно переосмыслить пару методов
+
+
 
 @RestController
 @RequestMapping("/v1/cart")
 @AllArgsConstructor
 public class CartController {
 
+
+
     private CartService service;
 
-    @PostMapping
-    public ResponseEntity<Cart> addProductToCart(@RequestParam Long userId, @RequestParam CartItemDto cartItemDto) {
+    @GetMapping
+    public ResponseEntity<CartDto> getCart() {
+        return ResponseEntity.ok(service.getCart());
+    }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.getCart(userId, cartItemDto));
+    @PostMapping("/add")
+    public ResponseEntity<CartDto> addProductToCart(@RequestBody AddProductToCartRequest addProductToCartRequest) {
+        CartDto cartDto = service.addProductToCart(addProductToCartRequest.getProductId(), addProductToCartRequest.getQuantity());
+        return ResponseEntity.ok(cartDto);
+    }
+
+    @DeleteMapping("/remove/{productId}")
+    public ResponseEntity<Void> removeProductFromCart(@PathVariable Long productId) {
+        service.removeProductFromCart(productId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/clear")
+    public ResponseEntity<Void> clearCart() {
+        service.clearCart();
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update-quantity")
+    public ResponseEntity<Void> updateCartItemQuantity(@RequestBody UpdateCartItemQuantityRequest request) {
+        service.updateCartItemQuantity(request.getCartItemId(), request.getQuantity());
+        return ResponseEntity.ok().build();
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddProductToCartRequest {
+        private Long productId;
+        private Integer quantity;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static public class UpdateCartItemQuantityRequest {
+        private Long cartItemId;
+        private Integer quantity;
     }
 }
