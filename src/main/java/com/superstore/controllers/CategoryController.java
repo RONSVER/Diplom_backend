@@ -1,5 +1,6 @@
 package com.superstore.controllers;
 
+import com.superstore.controllers.swagger.CategoryControllerSwagger;
 import com.superstore.dto.CategoryDto;
 import com.superstore.services.CategoryService;
 import jakarta.validation.Valid;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/v1/categories")
-public class CategoryController {
+public class CategoryController implements CategoryControllerSwagger {
 
     private final CategoryService service;
 

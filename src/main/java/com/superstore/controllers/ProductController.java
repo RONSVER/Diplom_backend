@@ -1,5 +1,6 @@
 package com.superstore.controllers;
 
+import com.superstore.controllers.swagger.ProductControllerSwagger;
 import com.superstore.dto.ProductDto;
 import com.superstore.services.ProductService;
 import jakarta.validation.Valid;
@@ -15,12 +16,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/products")
 @AllArgsConstructor
-public class ProductController {
+public class ProductController implements ProductControllerSwagger {
 
     private ProductService service;
 
     @PostMapping
     @PreAuthorize("hasAuthority('Administrator')")
+    @Override
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.createProduct(productDto));
@@ -28,6 +30,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
+    @Override
     public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(service.editProduct(id, productDto));
@@ -35,18 +38,21 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
+    @Override
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/{id}")
+    @Override
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
         ProductDto product = service.getProductById(id);
         return ResponseEntity.ok(product);
     }
 
     @GetMapping
+    @Override
     public ResponseEntity<List<ProductDto>> getProducts(
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
