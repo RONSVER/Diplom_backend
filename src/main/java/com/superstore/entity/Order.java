@@ -51,4 +51,9 @@ public class Order {
     public enum Status {
         NEW, PROCESSING, SHIPPED, DELIVERED, CANCELLED
     }
+
+    public enum DeliveryMethod {
+        COURIER,
+        PICKUP
+    }
 }
