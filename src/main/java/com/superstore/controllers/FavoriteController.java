@@ -2,21 +2,14 @@ package com.superstore.controllers;
 
 import com.superstore.dto.FavoriteDto;
 import com.superstore.dto.ProductDto;
-import com.superstore.entity.Favorite;
-import com.superstore.mapper.FavoriteMapper;
-import com.superstore.repository.UserRepository;
 import com.superstore.services.FavoriteService;
-import com.superstore.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
@@ -24,7 +17,6 @@ import java.util.stream.Collectors;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
-    private final FavoriteMapper favoriteMapper;
 
     @GetMapping
     @PreAuthorize("hasAuthority('Client') or hasAuthority('Administrator')")

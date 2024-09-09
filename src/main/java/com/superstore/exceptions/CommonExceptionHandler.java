@@ -26,8 +26,8 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // Обработчик исключений для ресурс не найден
-    @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class, ProductNotFoundException.class, CartNotFoundException.class, CartItemNotFoundException.class})
+    // Обработчик исключений если ресурс не найден
+    @ExceptionHandler({CategoryNotFoundException.class, UserNotFoundException.class, ProductNotFoundException.class, CartNotFoundException.class, CartItemNotFoundException.class, EmptyCartException.class, OrderNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(Exception exception, WebRequest request) {
         logger.error("Resource not found: {}", exception.getMessage(), exception);
         ErrorResponse errorResponse = createErrorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request);
@@ -73,8 +73,8 @@ public class CommonExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // Обработчик IllegalArgumentException и IllegalStateException
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    // Обработчик IllegalArgumentException и IllegalStateException и InvalidOrderStatusException
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, InvalidOrderStatusException.class})
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception exception, WebRequest request) {
         logger.error("Invalid argument: {}", exception.getMessage(), exception);
         ErrorResponse errorResponse = createErrorResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request);
