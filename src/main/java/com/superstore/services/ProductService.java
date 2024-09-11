@@ -19,4 +19,8 @@ public interface ProductService {
 
     void deleteById(Long id);
 
+    ProductDto applyDiscount(Long productId, BigDecimal discountPrice);
+
+    ProductDto getProductOfTheDay();
+
 }
