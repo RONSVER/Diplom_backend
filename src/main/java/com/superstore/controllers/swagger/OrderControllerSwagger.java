@@ -21,6 +21,7 @@ public interface OrderControllerSwagger {
             }
     )
     ResponseEntity<OrderDto> createOrder(@RequestBody CreateOrderRequest request);
+
     @Operation(
             summary = "Просмотр статуса заказа",
             description = "Возвращает статус заказа",
@@ -32,19 +33,38 @@ public interface OrderControllerSwagger {
 
     @GetMapping("/{orderId}")
     ResponseEntity<OrderDto> getOrder(@PathVariable Long orderId);
+
     @Operation(
             summary = "История покупок пользователя",
             description = "Показывает историю покупок пользователя",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Ок"),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+                    @ApiResponse(responseCode = "404", description = "Не найдено")
             }
     )
     @GetMapping("/history")
     ResponseEntity<List<OrderDto>> getUserOrderHistory();
 
+    @Operation(
+            summary = "Просмотр статуса заказа",
+            description = "Возвращает статус заказа",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ок"),
+                    @ApiResponse(responseCode = "404", description = "Не найдено")
+            }
+    )
+
     @GetMapping("/{orderId}/status")
     ResponseEntity<OrderDto> getOrderStatus(@PathVariable Long orderId);
+
+    @Operation(
+            summary = "Внесение изменений в существующий ",
+            description = "Возвращает статус заказа",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ок"),
+                    @ApiResponse(responseCode = "404", description = "Не найдено")
+            }
+    )
 
     @PatchMapping("/{orderId}/cancel")
     ResponseEntity<Void> cancelOrder(@PathVariable Long orderId);
