@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class UserServiceTest {
+
     @Autowired
     private UserService userService;
 
