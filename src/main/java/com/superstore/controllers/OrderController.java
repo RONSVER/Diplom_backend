@@ -3,6 +3,7 @@ package com.superstore.controllers;
 import com.superstore.dto.OrderDto;
 import com.superstore.entity.Order;
 import com.superstore.services.OrderService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class OrderController {
     private final OrderService service;
 
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<OrderDto> createOrder(@Valid @RequestBody CreateOrderRequest request) {
         OrderDto order = service.createOrder(request);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }

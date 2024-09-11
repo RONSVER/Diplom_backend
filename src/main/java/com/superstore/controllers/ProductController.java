@@ -3,6 +3,7 @@ package com.superstore.controllers;
 import com.superstore.dto.ProductDto;
 import com.superstore.services.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,4 +59,22 @@ public class ProductController {
         List<ProductDto> products = service.getProducts(minPrice, maxPrice, hasDiscount, categoryId, sortBy, order);
         return ResponseEntity.ok(products);
     }
+
+//    протетировать, небыло времени проверить
+    @PreAuthorize("hasAuthority('Administrator')")
+    @PostMapping("/{productId}/discount")
+    public ResponseEntity<ProductDto> applyDiscount(@PathVariable Long productId, @Valid @RequestBody DiscountRequest discountPrice) {
+        return ResponseEntity.ok(service.applyDiscount(productId, discountPrice.discountPrice()));
+    }
+
+    @PreAuthorize("hasAuthority('Administrator')")
+    @GetMapping("/product-of-the-day")
+    public ResponseEntity<ProductDto> getProductOfTheDay() {
+        return ResponseEntity.ok(service.getProductOfTheDay());
+    }
+
+    public record DiscountRequest(
+            @NotNull
+            BigDecimal discountPrice
+    ) {}
 }

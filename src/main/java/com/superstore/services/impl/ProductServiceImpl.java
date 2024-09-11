@@ -17,9 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,6 +83,32 @@ public class ProductServiceImpl implements ProductService {
         }
 
         dao.deleteById(productId);
+    }
+
+    @Override
+    @Transactional
+    public ProductDto applyDiscount(Long productId, BigDecimal discountPrice) {
+        Product product = dao.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id " + productId));
+
+        product.setDiscountPrice(discountPrice);
+        dao.save(product);
+
+        return productMapper.productToProductDto(product);
+    }
+
+    @Override
+    public ProductDto getProductOfTheDay() {
+        List<Product> productsWithDiscount = dao.findByDiscountPriceIsNotNullOrderByDiscountPriceDesc();
+        if (productsWithDiscount.isEmpty()) {
+            throw new ProductNotFoundException("No products with discount found.");
+        }
+
+        Product productOfTheDay = productsWithDiscount.size() == 1
+                ? productsWithDiscount.get(0)
+                : productsWithDiscount.get(new Random().nextInt(productsWithDiscount.size()));
+
+        return productMapper.productToProductDto(productOfTheDay);
     }
 
     public List<ProductDto> getProducts(BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, Long categoryId, String sortBy, String order) {
