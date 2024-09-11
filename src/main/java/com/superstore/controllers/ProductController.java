@@ -1,7 +1,6 @@
 package com.superstore.controllers;
 
 import com.superstore.dto.ProductDto;
-import com.superstore.entity.Order;
 import com.superstore.services.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -64,7 +63,7 @@ public class ProductController {
 //    протетировать, небыло времени проверить
     @PreAuthorize("hasAuthority('Administrator')")
     @PostMapping("/{productId}/discount")
-    public ResponseEntity<ProductDto> applyDiscount(@PathVariable Long productId, @RequestBody DiscountRequest discountPrice) {
+    public ResponseEntity<ProductDto> applyDiscount(@PathVariable Long productId, @Valid @RequestBody DiscountRequest discountPrice) {
         return ResponseEntity.ok(service.applyDiscount(productId, discountPrice.discountPrice()));
     }
 
@@ -75,6 +74,7 @@ public class ProductController {
     }
 
     public record DiscountRequest(
+            @NotNull
             BigDecimal discountPrice
     ) {}
 }
