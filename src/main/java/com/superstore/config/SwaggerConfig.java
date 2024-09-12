@@ -9,8 +9,16 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 
+/**
+ * Configuration class for Swagger API documentation.
+ */
 @Configuration
 public class SwaggerConfig {
+    /**
+     * Defines the OpenAPI configuration for Swagger API documentation.
+     *
+     * @return An instance of OpenAPI containing the configured documentation.
+     */
     @Bean
     public OpenAPI defineOpenApi() {
         Server server = new Server();
