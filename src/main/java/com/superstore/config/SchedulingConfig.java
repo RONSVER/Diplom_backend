@@ -3,11 +3,9 @@ package com.superstore.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/**
- * This class is a configuration class for scheduling tasks using Spring's Task Scheduling capabilities.
- * It is annotated with @Configuration to indicate that it provides bean definitions.
- * It is also annotated with @EnableScheduling to enable Spring's scheduling infrastructure.
- */
+/** * Этот класс является классом конфигурации для планирования задач с использованием возможностей планирования задач Spring.
+ * * Он помечен символом @Configuration, чтобы указать, что он предоставляет определения компонентов.
+ * * Он также помечен символом @EnableScheduling, чтобы включить инфраструктуру планирования Spring. */
 @Configuration
 @EnableScheduling
 public class SchedulingConfig {
