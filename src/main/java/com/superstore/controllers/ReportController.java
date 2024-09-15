@@ -1,5 +1,6 @@
 package com.superstore.controllers;
 
+import com.superstore.controllers.swagger.ReportControllerSwagger;
 import com.superstore.dto.ProductAwaitingPaymentReportDto;
 import com.superstore.dto.ProductReportDto;
 import com.superstore.dto.ProfitReportDto;
@@ -18,20 +19,23 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/reports")
 @AllArgsConstructor
-public class ReportController {
+public class ReportController implements ReportControllerSwagger {
     private final ReportService service;
 
     @GetMapping("/top-sold-products")
+    @Override
     public ResponseEntity<List<ProductReportDto>> getTop10SoldProducts() {
         return ResponseEntity.ok(service.getTop10SoldProducts());
     }
 
     @GetMapping("/top-cancelled-products")
+    @Override
     public ResponseEntity<List<ProductReportDto>> getTop10CancelledProducts() {
         return ResponseEntity.ok(service.getTop10CancelledProducts());
     }
 
     @GetMapping("/profit")
+    @Override
     public ResponseEntity<List<ProfitReportDto>> getProfitReport(@RequestParam String interval,
                                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
                                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
@@ -39,6 +43,7 @@ public class ReportController {
     }
 
     @GetMapping("/awaiting-payment")
+    @Override
     public ResponseEntity<List<ProductAwaitingPaymentReportDto>> getAwaitingPayment(@RequestParam int days) {
         return ResponseEntity.ok(service.finOrdersProcessingBeforeDate(days));
     }
