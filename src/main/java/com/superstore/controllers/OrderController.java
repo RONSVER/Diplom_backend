@@ -2,7 +2,9 @@ package com.superstore.controllers;
 
 import com.superstore.controllers.swagger.OrderControllerSwagger;
 import com.superstore.dto.OrderDto;
+import com.superstore.entity.Order;
 import com.superstore.services.OrderService;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +52,14 @@ public class OrderController implements OrderControllerSwagger {
     public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
         service.cancelOrder(orderId);
         return ResponseEntity.ok().build();
+    }
+
+    public record CreateOrderRequest(
+            @NotNull
+            String deliveryAddress,
+            @NotNull
+            Order.DeliveryMethod deliveryMethod
+    ) {
     }
 
 }

@@ -17,6 +17,19 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing user-related operations.
+ * This class handles the REST endpoints for CRUD operations related to users.
+ *
+ * @RestController annotation marks this class as a REST controller.
+ * It is responsible for taking incoming HTTP requests and returning the appropriate HTTP responses.
+ *
+ * @RequestMapping annotation specifies the base URI path ("/v1/users") for all the endpoints in this class.
+ *
+ * @AllArgsConstructor annotation is used to generate a constructor with all the required arguments.
+ *
+ * Implements UserControllerSwagger interface which provides the documentation of the REST endpoints.
+ */
 @RestController
 @RequestMapping("/v1/users")
 @AllArgsConstructor
@@ -40,8 +53,9 @@ public class UserController implements UserControllerSwagger {
 
     @PostMapping
     public ResponseEntity<UserDTO> save(@Valid @RequestBody UserDTO userCreateDTO) {
+        String encodedPassword = passwordEncoder.encode(userCreateDTO.passwordHash());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.createUser(userCreateDTO, passwordEncoder.encode(userCreateDTO.passwordHash())));
+                .body(service.createUser(userCreateDTO, encodedPassword));
     }
 
     @PutMapping("/{id}")
@@ -64,7 +78,8 @@ public class UserController implements UserControllerSwagger {
 
     @PostMapping("/register")
     public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
-        service.registerUser(userCreateDTO, passwordEncoder.encode(userCreateDTO.passwordHash()));
+        String encodedPassword = passwordEncoder.encode(userCreateDTO.passwordHash());
+        service.registerUser(userCreateDTO, encodedPassword);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

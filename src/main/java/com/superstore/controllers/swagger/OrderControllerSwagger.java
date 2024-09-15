@@ -1,5 +1,6 @@
 package com.superstore.controllers.swagger;
 
+import com.superstore.controllers.OrderController;
 import com.superstore.dto.OrderDto;
 import com.superstore.entity.Order;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +21,7 @@ public interface OrderControllerSwagger {
                     @ApiResponse(responseCode = "400", description = "Неверный запрос")
             }
     )
-    ResponseEntity<OrderDto> createOrder(@RequestBody CreateOrderRequest request);
+    ResponseEntity<OrderDto> createOrder(@RequestBody OrderController.CreateOrderRequest request);
 
     @Operation(
             summary = "Просмотр статуса заказа",
@@ -68,12 +69,4 @@ public interface OrderControllerSwagger {
 
     @PatchMapping("/{orderId}/cancel")
     ResponseEntity<Void> cancelOrder(@PathVariable Long orderId);
-
-    public record CreateOrderRequest(
-            @NotNull
-            String deliveryAddress,
-            @NotNull
-            Order.DeliveryMethod deliveryMethod
-    ) {
-    }
 }
