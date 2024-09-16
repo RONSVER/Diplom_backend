@@ -15,8 +15,6 @@ import java.util.List;
 
 public interface FavoriteControllerSwagger {
 
-    @GetMapping
-    @PreAuthorize("hasAuthority('Client') or hasAuthority('Administrator')")
     @Operation(
             summary = "Получение списка избранных товаров пользователя",
             description = "Показывает списка избранных товаров пользователя",
@@ -26,9 +24,6 @@ public interface FavoriteControllerSwagger {
             }
     )
     ResponseEntity<List<ProductDto>> getUserFavorites();
-
-    @PostMapping("/{productId}")
-    @PreAuthorize("hasAuthority('Client') or hasAuthority('Administrator')")
 
     @Operation(
             summary = "Добавление товара в избранное",
@@ -40,8 +35,6 @@ public interface FavoriteControllerSwagger {
     )
     ResponseEntity<FavoriteDto> addFavorite(@PathVariable Long productId);
 
-    @DeleteMapping("/{productId}")
-    @PreAuthorize("hasAuthority('Client') or hasAuthority('Administrator')")
     @Operation(
             summary = "Удаление товара из избранного",
             description = "Удаляет товар из избранного",
