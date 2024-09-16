@@ -5,8 +5,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 @Schema(description = "Модель пользователя")
+@Builder
 public record UserDTO(
         @Schema(description = "Идентификатор пользователя", example = "1")
         Long userId,

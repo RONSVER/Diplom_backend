@@ -24,6 +24,7 @@ public interface UserControllerSwagger {
     )
     ResponseEntity<List<UserDTO>> findAll();
 
+
     @Operation(
             summary = "Получить пользователя по ID",
             description = "Возвращает пользователя на основе переданного идентификатора",
@@ -118,7 +119,7 @@ public interface UserControllerSwagger {
                     @ApiResponse(responseCode = "400", description = "Неверный запрос")
             }
     )
-    ResponseEntity<Void> registerUser(@Parameter(
+    ResponseEntity<UserRegisterDTO> registerUser(@Parameter(
             name = "userCreateDTO",
             description = "Тело регистрации",
             required = true,

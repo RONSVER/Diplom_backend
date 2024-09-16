@@ -78,9 +78,9 @@ public class UserController implements UserControllerSwagger {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
+    public ResponseEntity<UserRegisterDTO> registerUser(@Valid @RequestBody UserRegisterDTO userCreateDTO) {
         String encodedPassword = passwordEncoder.encode(userCreateDTO.passwordHash());
-        service.registerUser(userCreateDTO, encodedPassword);
+        UserRegisterDTO userRegisterDTO = service.registerUser(userCreateDTO, encodedPassword);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
