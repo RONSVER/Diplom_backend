@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 //@WebMvcTest(FavoriteController.class)
+@WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
 public class FavoriteControllerTest {
 
     @Autowired
@@ -39,7 +41,6 @@ public class FavoriteControllerTest {
     @MockBean
     private JwtService jwtService;
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     void getUserFavorites() throws Exception {
         ProductDto productDto = new ProductDto(1l, "Lopata", "This is lopata", new BigDecimal(111), "Saraj", new BigDecimal(111), "http:url");
         when(favoriteService.getUserFavoriteProducts()).thenReturn(Collections.singletonList(productDto));
@@ -56,14 +57,13 @@ public class FavoriteControllerTest {
         verifyNoMoreInteractions(favoriteService);
     }
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     void addFavorite() throws Exception {
         Long productId = 1L;
         FavoriteDto favoriteDto = new FavoriteDto(1L,1L,1L);
         when(favoriteService.addFavorite(productId)).thenReturn(favoriteDto);
 
         mockMvc.perform(post("/v1/favorites/" + productId)
-                .with(user("user").roles("Client"))
+                .with(user("admin").roles("Client"))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
@@ -75,20 +75,17 @@ public class FavoriteControllerTest {
     }
 
  @Test
- @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
+
  void removeFavorite() throws Exception {
      Long productId = 1L;
      doNothing().when(favoriteService).removeFavorite(productId);
 
      mockMvc.perform(delete("/v1/favorites/" + productId)
-             .with(user("user").roles("Client"))
-             .accept(MediaType.APPLICATION_JSON))
+                     .with(user("user").roles("Client"))
+                     .accept(MediaType.APPLICATION_JSON))
              .andExpect(status().isNoContent());
 
-     InOrder inOrder = inOrder(favoriteService);
-     inOrder.verify(favoriteService).removeFavorite(productId);
-     inOrder.verifyNoMoreInteractions();
-
+     verify(favoriteService,times(1)).removeFavorite(productId);
      verifyNoMoreInteractions(favoriteService);
  }
 }

@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * The FavoriteController class handles requests related to user favorites.
- */
 @AllArgsConstructor
 @RestController
 @RequestMapping("/v1/favorites")
@@ -23,7 +20,7 @@ public class FavoriteController implements FavoriteControllerSwagger {
     private final FavoriteService favoriteService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('Client')")
+    @PreAuthorize("hasAuthority('ROLE_Client') or hasAuthority('Administrator')")
     @Override
     public ResponseEntity<List<ProductDto>> getUserFavorites() {
         return ResponseEntity.status(HttpStatus.OK)
@@ -31,7 +28,7 @@ public class FavoriteController implements FavoriteControllerSwagger {
     }
 
     @PostMapping("/{productId}")
-    @PreAuthorize("hasAuthority('Client')")
+    @PreAuthorize("hasAuthority('ROLE_Client') or hasAuthority('Administrator')")
     @Override
     public ResponseEntity<FavoriteDto> addFavorite(@PathVariable Long productId) {
         FavoriteDto favoriteDto = favoriteService.addFavorite(productId);
@@ -39,7 +36,7 @@ public class FavoriteController implements FavoriteControllerSwagger {
     }
 
     @DeleteMapping("/{productId}")
-    @PreAuthorize("hasAuthority('Client')")
+    @PreAuthorize("hasAuthority('ROLE_Client') or hasAuthority('Administrator')")
     @Override
     public ResponseEntity<Void> removeFavorite(@PathVariable Long productId) {
         favoriteService.removeFavorite(productId);

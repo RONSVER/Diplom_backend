@@ -1,6 +1,7 @@
 package com.superstore.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.superstore.config.WebSecurityConfig;
 import com.superstore.dto.UserDTO;
 import com.superstore.dto.UserRegisterDTO;
 import com.superstore.entity.User;
@@ -9,14 +10,21 @@ import com.superstore.security.JwtService;
 import com.superstore.security.model.JwtAuthenticationResponse;
 import com.superstore.security.model.SignInRequest;
 import com.superstore.services.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-//@WebMvcTest(UserController.class)
+@WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
 public class UserControllerTest {
 
     private static final Logger logger = LoggerFactory.getLogger(UserControllerTest.class);
@@ -51,8 +59,10 @@ public class UserControllerTest {
     @MockBean
     private PasswordEncoder passwordEncoder;
 
+    @MockBean
+    private AuthenticationManager authenticationManager;
+
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     public void testFindAll() throws Exception {
         UserDTO user1 = UserDTO.builder()
 
@@ -84,7 +94,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     public void testFindById() throws Exception {
         UserDTO user = UserDTO.builder()
                 .userId(1L)
@@ -105,7 +114,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     public void testSave() throws Exception {
         UserDTO user = UserDTO.builder()
                 .userId(3L)
@@ -132,7 +140,6 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(3L));
     }
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     public void testUpdateUser() throws Exception {
         UserDTO user = UserDTO.builder()
                 .userId(1L)
@@ -158,7 +165,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     public void testDeleteById() throws Exception {
         Long id = 1L;
 
@@ -169,7 +175,6 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
     }
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     public void testRegisterUser() throws Exception {
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO(
                 "TestUser",
@@ -191,7 +196,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     public void testLogin() throws Exception {
         SignInRequest request = new SignInRequest();
         JwtAuthenticationResponse response = new JwtAuthenticationResponse();

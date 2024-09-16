@@ -70,6 +70,8 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(orderMapper::orderItemToOrderItemDto)
                 .toList();
+        OrderDto orderDto = orderMapper.orderToOrderDto(order);
+
 
         cartService.clearCart();
 

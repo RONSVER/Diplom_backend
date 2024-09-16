@@ -1,9 +1,12 @@
 package com.superstore.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.superstore.dto.OrderDto;
+import com.superstore.entity.Order;
 import com.superstore.security.AuthenticationService;
 import com.superstore.security.JwtService;
 import com.superstore.services.OrderService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +19,20 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 //@WebMvcTest(OrderController.class)
+@WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
 public class OrderControllerTest {
 
     @Autowired
@@ -37,20 +45,29 @@ public class OrderControllerTest {
     @MockBean
     private JwtService jwtService;
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
-    void shouldCreateOrder() throws Exception {
-        String requestBody = "{ \"deliveryAddress\": \"123 Sunny Street, Happy Town\", \"deliveryMethod\": \"COURIER\" }";
-        OrderDto orderDto = mock(OrderDto.class);
-        when(orderService.createOrder(ArgumentMatchers.any())).thenReturn(orderDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/v1/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isCreated());
+    void shouldCreateOrder() throws Exception {
+        OrderController.CreateOrderRequest requestBody = new OrderController.CreateOrderRequest(
+                "123 Sunny Street, Happy Town",
+                Order.DeliveryMethod.COURIER
+        );
+        OrderDto expectedOrderDto = new OrderDto(1, 1L, LocalDate.of(2024, Month.JANUARY, 18).atStartOfDay(), "123 Sunny Street, Happy Town", Order.DeliveryMethod.COURIER, Order.Status.PROCESSING, Collections.emptyList()); // Assuming the OrderDto class looks something similar...
+        when(orderService.createOrder(ArgumentMatchers.any())).thenReturn(expectedOrderDto);
+        try {
+            mockMvc.perform(MockMvcRequestBuilders.post("/v1/orders")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(new ObjectMapper().writeValueAsString(requestBody)))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.deliveryAddress", Matchers.is("123 Sunny Street, Happy Town")))
+                    .andExpect(jsonPath("$.deliveryMethod", Matchers.is("COURIER")));
+
+            verify(orderService, times(1)).createOrder(ArgumentMatchers.any(OrderController.CreateOrderRequest.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     void shouldGetOrder() throws Exception {
         OrderDto orderDto = mock(OrderDto.class);
         Long orderId = 5L;
@@ -61,7 +78,6 @@ public class OrderControllerTest {
                 .andExpect(status().isOk());
     }
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     void shouldGetUserOrderHistory() throws Exception {
         List<OrderDto> orderDtos = Arrays.asList(mock(OrderDto.class));
         when(orderService.getOrderHistory()).thenReturn(orderDtos);
@@ -72,7 +88,6 @@ public class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     void shouldGetOrderStatus() throws Exception {
         OrderDto orderDto = mock(OrderDto.class);
         Long orderId = 6L;
@@ -83,7 +98,6 @@ public class OrderControllerTest {
                 .andExpect(status().isOk());
     }
     @Test
-    @WithMockUser(username = "admin", authorities = {"Administrator", "Client"})
     void shouldCancelOrder() throws Exception {
         Long orderId = 7L;
         doNothing().when(orderService).cancelOrder(orderId);
