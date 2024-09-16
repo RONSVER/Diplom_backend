@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
+/**
+ * Controller class for managing categories.
+ */
 @AllArgsConstructor
 @RestController
 @RequestMapping("/v1/categories")

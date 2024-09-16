@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * The ProductController class handles HTTP requests related to products.
+ */
 @RestController
 @RequestMapping("/v1/products")
 @AllArgsConstructor

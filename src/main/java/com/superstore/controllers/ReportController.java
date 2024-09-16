@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Controller class for handling reports related endpoints.
+ */
 @RestController
 @RequestMapping("/v1/reports")
 @AllArgsConstructor

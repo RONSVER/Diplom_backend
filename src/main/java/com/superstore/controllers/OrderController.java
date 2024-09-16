@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * This class represents the controller for managing orders.
+ */
 @RestController
 @RequestMapping("/v1/orders")
 @AllArgsConstructor
