@@ -15,6 +15,7 @@ import java.util.List;
 
 public interface FavoriteControllerSwagger {
 
+    @GetMapping
     @Operation(
             summary = "Получение списка избранных товаров пользователя",
             description = "Показывает списка избранных товаров пользователя",
@@ -24,6 +25,8 @@ public interface FavoriteControllerSwagger {
             }
     )
     ResponseEntity<List<ProductDto>> getUserFavorites();
+
+    @PostMapping("/{productId}")
 
     @Operation(
             summary = "Добавление товара в избранное",
@@ -35,6 +38,7 @@ public interface FavoriteControllerSwagger {
     )
     ResponseEntity<FavoriteDto> addFavorite(@PathVariable Long productId);
 
+    @DeleteMapping("/{productId}")
     @Operation(
             summary = "Удаление товара из избранного",
             description = "Удаляет товар из избранного",
