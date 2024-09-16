@@ -2,6 +2,8 @@ package com.superstore.controllers.swagger;
 
 import com.superstore.dto.ProductDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,12 @@ public interface ProductControllerSwagger {
                     @ApiResponse(responseCode = "400", description = "Неверный запрос")
             }
     )
-    ResponseEntity<ProductDto> createProduct(@Valid @RequestBody ProductDto productDto);
+    ResponseEntity<ProductDto> createProduct(@Parameter(
+            name = "productDto",
+            description = "Тело продукта",
+            required = true,
+            in = ParameterIn.HEADER
+    ) @Valid @RequestBody ProductDto productDto);
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
@@ -35,7 +42,12 @@ public interface ProductControllerSwagger {
                     @ApiResponse(responseCode = "404", description = "Товар не найден")
             }
     )
-    ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto);
+    ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @Parameter(
+            name = "productDto",
+            description = "Тело новаого продукта",
+            required = true,
+            in = ParameterIn.HEADER
+    ) @Valid @RequestBody ProductDto productDto);
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")

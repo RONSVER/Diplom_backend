@@ -4,6 +4,8 @@ import com.superstore.controllers.OrderController;
 import com.superstore.dto.OrderDto;
 import com.superstore.entity.Order;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +23,16 @@ public interface OrderControllerSwagger {
                     @ApiResponse(responseCode = "400", description = "Неверный запрос")
             }
     )
-    ResponseEntity<OrderDto> createOrder(@RequestBody OrderController.CreateOrderRequest request);
+    ResponseEntity<OrderDto> createOrder(@Parameter(
+            name = "request",
+            description = "Тело заказа",
+            required = true,
+            in = ParameterIn.HEADER
+    ) @RequestBody OrderController.CreateOrderRequest request);
 
     @Operation(
-            summary = "Просмотр статуса заказа",
-            description = "Возвращает статус заказа",
+            summary = "Получение заказа по id",
+            description = "Возвращает заказ по id",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Ок"),
                     @ApiResponse(responseCode = "404", description = "Не найдено")
@@ -59,8 +66,8 @@ public interface OrderControllerSwagger {
     ResponseEntity<OrderDto> getOrderStatus(@PathVariable Long orderId);
 
     @Operation(
-            summary = "Внесение изменений в существующий ",
-            description = "Возвращает статус заказа",
+            summary = "Отмена существующего заказа ",
+            description = "Отменяет заказ по id",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Ок"),
                     @ApiResponse(responseCode = "404", description = "Не найдено")

@@ -14,8 +14,15 @@ import java.util.List;
 
 public interface UserControllerSwagger {
 
+    @Operation(
+            summary = "Получить список всех пользователей",
+            description = "Возвращает полный список пользователей в формате UserDTO",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Список пользователей успешно получен"),
+                    @ApiResponse(responseCode = "204", description = "Пользователи отсутствуют")
+            }
+    )
     ResponseEntity<List<UserDTO>> findAll();
-
 
     @Operation(
             summary = "Получить пользователя по ID",
@@ -26,14 +33,27 @@ public interface UserControllerSwagger {
             }
     )
     ResponseEntity<UserDTO> findById(@Parameter(
-                                             name = "id",
-                                             description = "Идентификатор пользователя",
-                                             required = true,
-                                             in = ParameterIn.PATH
-                                     )
+            name = "id",
+            description = "Идентификатор пользователя",
+            required = true,
+            in = ParameterIn.PATH
+    )
                                      Long id);
 
-    ResponseEntity<UserDTO> save(UserDTO userCreateDTO);
+    @Operation(
+            summary = "Добавить пользователя",
+            description = "Добовляет пользователя в базу данных",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Пользователь создан"),
+                    @ApiResponse(responseCode = "400", description = "Не корректный запрос")
+            }
+    )
+    ResponseEntity<UserDTO> save(@Parameter(
+            name = "userCreateDTO",
+            description = "Тело пользователя",
+            required = true,
+            in = ParameterIn.HEADER
+    ) UserDTO userCreateDTO);
 
     @Operation(
             summary = "Обновляет пользователя по ID",
@@ -45,12 +65,18 @@ public interface UserControllerSwagger {
             }
     )
     ResponseEntity<UserDTO> updateUser(@Parameter(
-                                               name = "id",
-                                               description = "Идентификатор пользователя",
+            name = "id",
+            description = "Идентификатор пользователя",
+            required = true,
+            in = ParameterIn.PATH
+    )
+                                       Long id,
+                                       @Parameter(
+                                               name = "userDTO",
+                                               description = "Тело пользователя",
                                                required = true,
-                                               in = ParameterIn.PATH
-                                       )
-                                       Long id, UserDTO userDTO);
+                                               in = ParameterIn.HEADER
+                                       ) UserDTO userDTO);
 
     @Operation(
             summary = "Удалить пользователя по ID",
@@ -61,12 +87,13 @@ public interface UserControllerSwagger {
             }
     )
     ResponseEntity<Void> deleteById(@Parameter(
-                                            name = "id",
-                                            description = "Идентификатор пользователя",
-                                            required = true,
-                                            in = ParameterIn.PATH
-                                    )
+            name = "id",
+            description = "Идентификатор пользователя",
+            required = true,
+            in = ParameterIn.PATH
+    )
                                     Long id);
+
     @Operation(
             summary = "Аутентификация пользователя",
             description = "Аутентифицирует пользователя",
@@ -76,11 +103,11 @@ public interface UserControllerSwagger {
             }
     )
     ResponseEntity<JwtAuthenticationResponse> login(@Parameter(
-                                                            name = "id",
-                                                            description = "Идентификатор пользователя",
-                                                            required = true,
-                                                            in = ParameterIn.PATH
-                                                    )
+            name = "request",
+            description = "Идентификатор пользователя",
+            required = true,
+            in = ParameterIn.HEADER
+    )
                                                     SignInRequest request);
 
     @Operation(
@@ -91,5 +118,10 @@ public interface UserControllerSwagger {
                     @ApiResponse(responseCode = "400", description = "Неверный запрос")
             }
     )
-    ResponseEntity<Void> registerUser(UserRegisterDTO userCreateDTO);
+    ResponseEntity<Void> registerUser(@Parameter(
+            name = "userCreateDTO",
+            description = "Тело регистрации",
+            required = true,
+            in = ParameterIn.HEADER)
+                                      UserRegisterDTO userCreateDTO);
 }

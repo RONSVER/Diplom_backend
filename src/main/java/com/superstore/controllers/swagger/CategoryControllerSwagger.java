@@ -2,6 +2,8 @@ package com.superstore.controllers.swagger;
 
 import com.superstore.dto.CategoryDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,12 @@ public interface CategoryControllerSwagger {
     )
     @PostMapping
     @PreAuthorize("hasAuthority('Administrator')")
-    ResponseEntity<CategoryDto> save(@Valid @RequestBody CategoryDto categoryDto);
+    ResponseEntity<CategoryDto> save(@Parameter(
+            name = "categoryDto",
+            description = "Тело категории",
+            required = true,
+            in = ParameterIn.HEADER
+    ) @Valid @RequestBody CategoryDto categoryDto);
 
     @Operation(
             summary = "Редактирование категории товаров",
@@ -34,7 +41,12 @@ public interface CategoryControllerSwagger {
     )
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('Administrator')")
-    ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto);
+    ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @Parameter(
+            name = "categoryDto",
+            description = "Тело новой категории",
+            required = true,
+            in = ParameterIn.HEADER
+    ) @Valid @RequestBody CategoryDto categoryDto);
 
     @Operation(
             summary = "Получение списка категорий товаров",

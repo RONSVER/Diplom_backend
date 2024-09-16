@@ -71,6 +71,7 @@ public class UserController implements UserControllerSwagger {
     }
 
     @PostMapping("/login")
+    @Override
     public ResponseEntity<JwtAuthenticationResponse> login(@RequestBody SignInRequest request) {
         JwtAuthenticationResponse response = authenticationService.authenticate(request);
         return ResponseEntity.ok(response);
