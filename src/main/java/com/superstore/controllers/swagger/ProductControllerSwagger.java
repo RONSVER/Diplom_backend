@@ -15,7 +15,6 @@ import java.util.List;
 
 public interface ProductControllerSwagger {
     @PostMapping
-    @PreAuthorize("hasAuthority('Administrator')")
     @Operation(
             summary = "Добавление нового товара",
             description = "Добавляет новый товар",
@@ -32,7 +31,6 @@ public interface ProductControllerSwagger {
     ) @Valid @RequestBody ProductDto productDto);
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('Administrator')")
     @Operation(
             summary = "Редактирование товара",
             description = "Редактирует товар",
@@ -50,7 +48,6 @@ public interface ProductControllerSwagger {
     ) @Valid @RequestBody ProductDto productDto);
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('Administrator')")
     @Operation(
             summary = "Удаление товара",
             description = "Удаляет товар на основе переданного идентификатора",
