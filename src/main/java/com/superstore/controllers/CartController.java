@@ -7,18 +7,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-
-//    TODO: возможно нужно переосмыслить пару методов
-
-
-
+/**
+ * The CartController handles HTTP requests related to the shopping cart functionality.
+ */
 @RestController
 @RequestMapping("/v1/cart")
 @AllArgsConstructor
 public class CartController implements CartControllerSwagger {
-
-
 
     private CartService service;
 
