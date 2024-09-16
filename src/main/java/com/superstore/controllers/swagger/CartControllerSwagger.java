@@ -85,7 +85,7 @@ public interface CartControllerSwagger {
     @NoArgsConstructor
     @AllArgsConstructor
 
-    public static class AddProductToCartRequest {
+    class AddProductToCartRequest {
         private Long productId;
         private Integer quantity;
     }
@@ -94,7 +94,7 @@ public interface CartControllerSwagger {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    static public class UpdateCartItemQuantityRequest {
+    class UpdateCartItemQuantityRequest {
         private Long cartItemId;
         private Integer quantity;
     }
