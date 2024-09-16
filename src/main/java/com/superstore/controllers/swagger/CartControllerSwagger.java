@@ -2,6 +2,8 @@ package com.superstore.controllers.swagger;
 
 import com.superstore.dto.CartDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +33,12 @@ public interface CartControllerSwagger {
             }
     )
     @PostMapping("/add")
-    ResponseEntity<CartDto> addProductToCart(@RequestBody AddProductToCartRequest addProductToCartRequest);
+    ResponseEntity<CartDto> addProductToCart(@Parameter(
+            name = "addProductToCartRequest",
+            description = "Тело для добавления продукта в корзину",
+            required = true,
+            in = ParameterIn.HEADER
+    ) @RequestBody AddProductToCartRequest addProductToCartRequest);
 
     @Operation(
             summary = "Удаление товара из корзины по идентификатору",
@@ -66,7 +73,12 @@ public interface CartControllerSwagger {
     )
 
     @PutMapping("/update-quantity")
-    ResponseEntity<Void> updateCartItemQuantity(@RequestBody UpdateCartItemQuantityRequest request);
+    ResponseEntity<Void> updateCartItemQuantity(@Parameter(
+            name = "request",
+            description = "Тело для обновления количества продукта",
+            required = true,
+            in = ParameterIn.HEADER
+    ) @RequestBody UpdateCartItemQuantityRequest request);
 
     @Getter
     @Setter
